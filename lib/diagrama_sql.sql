@@ -1,34 +1,32 @@
--- Database generated with pgModeler (PostgreSQL Database Modeler).
--- pgModeler version: 0.9.4
--- PostgreSQL version: 13.0
--- Project Site: pgmodeler.io
--- Model Author: ---
+-- Model Authors: ---
+-- Carranza Ochoa José David,
+-- Casique Corona Luis Enrique,
+-- Sanchez de Santiago Julián,
+-- Salgado Miranda Jorge,
 
--- Database creation must be performed outside a multi lined SQL file. 
--- These commands were put in this file only as a convenience.
--- 
+
 -- object: new_database | type: DATABASE --
 -- DROP DATABASE IF EXISTS new_database;
-CREATE DATABASE new_database;
+CREATE DATABASE codders_muebleria;
 -- ddl-end --
 
 
--- object: public."ARTIC ULO" | type: TABLE --
--- DROP TABLE IF EXISTS public."ARTIC ULO" CASCADE;
-CREATE TABLE public."ARTIC ULO" (
+-- object: public."ARTICULO" | type: TABLE --
+-- DROP TABLE IF EXISTS public."ARTICULO" CASCADE;
+CREATE TABLE public."ARTICULO" (
 	codigo_barras bigint NOT NULL,
 	nombre varchar(50) NOT NULL,
 	precio_compra money NOT NULL,
 	precio_venta money NOT NULL,
 	stock smallint NOT NULL,
 	fotografia bytea NOT NULL,
-	"id_categoria_CATEGORIA" integer NOT NULL,
-	CONSTRAINT "ARTIC ULO_pk" PRIMARY KEY (codigo_barras)
+	"id_categoria" integer NOT NULL,
+	CONSTRAINT "ARTICULO_pk" PRIMARY KEY (codigo_barras)
 );
 -- ddl-end --
-COMMENT ON COLUMN public."ARTIC ULO".stock IS E'Calculado de la cantidad por articulo';
+COMMENT ON COLUMN public."ARTICULO".stock IS E'Calculado de la cantidad por articulo';
 -- ddl-end --
-ALTER TABLE public."ARTIC ULO" OWNER TO postgres;
+ALTER TABLE public."ARTICULO" OWNER TO postgres;
 -- ddl-end --
 
 -- object: public."CATEGORIA" | type: TABLE --
@@ -69,8 +67,8 @@ CREATE TABLE public."VENTA" (
 	monto_total money NOT NULL,
 	cantidad_total smallint NOT NULL,
 	"rfc_CLIENTE" varchar(13) NOT NULL,
-	"id_empleado_EMPLEADO" integer NOT NULL,
-	"id_empleado_EMPLEADO1" integer NOT NULL,
+	"id_empleado" integer NOT NULL,
+	"id_empleado1" integer NOT NULL,
 	CONSTRAINT "VENTA_pk" PRIMARY KEY (folio)
 );
 -- ddl-end --
@@ -120,8 +118,8 @@ CREATE TABLE public."EMPLEADO" (
 	estado varchar(50) NOT NULL,
 	codigo_postal bigint NOT NULL,
 	calle varchar(50) NOT NULL,
-	"id_sucursal_SUCURSAL" integer NOT NULL,
-	"id_empleado_EMPLEADO" integer NOT NULL,
+	"id_sucursal" integer NOT NULL,
+	"id_empleado" integer NOT NULL,
 	CONSTRAINT "EMPLEADO_pk" PRIMARY KEY (id_empleado)
 );
 -- ddl-end --
@@ -132,7 +130,7 @@ ALTER TABLE public."EMPLEADO" OWNER TO postgres;
 -- DROP TABLE IF EXISTS public."TELEFONO" CASCADE;
 CREATE TABLE public."TELEFONO" (
 	telefono_empleado bigint NOT NULL,
-	"id_empleado_EMPLEADO" integer NOT NULL,
+	"id_empleado" integer NOT NULL,
 	CONSTRAINT "TELEFONO_pk" PRIMARY KEY (telefono_empleado)
 );
 -- ddl-end --
@@ -141,7 +139,7 @@ ALTER TABLE public."TELEFONO" OWNER TO postgres;
 
 -- object: "EMPLEADO_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."TELEFONO" DROP CONSTRAINT IF EXISTS "EMPLEADO_fk" CASCADE;
-ALTER TABLE public."TELEFONO" ADD CONSTRAINT "EMPLEADO_fk" FOREIGN KEY ("id_empleado_EMPLEADO")
+ALTER TABLE public."TELEFONO" ADD CONSTRAINT "EMPLEADO_fk" FOREIGN KEY ("id_empleado")
 REFERENCES public."EMPLEADO" (id_empleado) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
@@ -165,91 +163,91 @@ ALTER TABLE public."SUCURSAL" OWNER TO postgres;
 
 -- object: public."many_PROVEEDOR_has_many_ARTIC ULO" | type: TABLE --
 -- DROP TABLE IF EXISTS public."many_PROVEEDOR_has_many_ARTIC ULO" CASCADE;
-CREATE TABLE public."many_PROVEEDOR_has_many_ARTIC ULO" (
-	"rfc_PROVEEDOR" varchar(13) NOT NULL,
-	"codigo_barras_ARTIC ULO" bigint NOT NULL,
+CREATE TABLE public."muchos_PROVEEDORES_tienen_muchos_ARTICULOS" (
+	"rfc" varchar(13) NOT NULL,
+	"codigo_barras" bigint NOT NULL,
 	fecha_comienzo date NOT NULL,
-	CONSTRAINT "many_PROVEEDOR_has_many_ARTIC ULO_pk" PRIMARY KEY ("rfc_PROVEEDOR","codigo_barras_ARTIC ULO")
+	CONSTRAINT "muchos_PROVEEDORES_tienen_muchos_ARTICULOS_pk" PRIMARY KEY ("rfc","codigo_barras")
 );
 -- ddl-end --
 
 -- object: "PROVEEDOR_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."many_PROVEEDOR_has_many_ARTIC ULO" DROP CONSTRAINT IF EXISTS "PROVEEDOR_fk" CASCADE;
-ALTER TABLE public."many_PROVEEDOR_has_many_ARTIC ULO" ADD CONSTRAINT "PROVEEDOR_fk" FOREIGN KEY ("rfc_PROVEEDOR")
+ALTER TABLE public."muchos_PROVEEDORES_tienen_muchos_ARTICULOS" ADD CONSTRAINT "PROVEEDOR_fk" FOREIGN KEY ("rfc")
 REFERENCES public."PROVEEDOR" (rfc) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
--- object: "ARTIC ULO_fk" | type: CONSTRAINT --
+-- object: "ARTICULO_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."many_PROVEEDOR_has_many_ARTIC ULO" DROP CONSTRAINT IF EXISTS "ARTIC ULO_fk" CASCADE;
-ALTER TABLE public."many_PROVEEDOR_has_many_ARTIC ULO" ADD CONSTRAINT "ARTIC ULO_fk" FOREIGN KEY ("codigo_barras_ARTIC ULO")
-REFERENCES public."ARTIC ULO" (codigo_barras) MATCH FULL
+ALTER TABLE public."muchos_PROVEEDORES_tienen_muchos_ARTICULOS" ADD CONSTRAINT "ARTICULO_fk" FOREIGN KEY ("codigo_barras")
+REFERENCES public."ARTICULO" (codigo_barras) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: "CATEGORIA_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."ARTIC ULO" DROP CONSTRAINT IF EXISTS "CATEGORIA_fk" CASCADE;
-ALTER TABLE public."ARTIC ULO" ADD CONSTRAINT "CATEGORIA_fk" FOREIGN KEY ("id_categoria_CATEGORIA")
+ALTER TABLE public."ARTICULO" ADD CONSTRAINT "CATEGORIA_fk" FOREIGN KEY ("id_categoria")
 REFERENCES public."CATEGORIA" (id_categoria) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: public."many_VENTA_has_many_ARTIC ULO" | type: TABLE --
 -- DROP TABLE IF EXISTS public."many_VENTA_has_many_ARTIC ULO" CASCADE;
-CREATE TABLE public."many_VENTA_has_many_ARTIC ULO" (
-	"folio_VENTA" char(7) NOT NULL,
-	"codigo_barras_ARTIC ULO" bigint NOT NULL,
+CREATE TABLE public."muchas_VENTAS_tienen_muchos_ARTICULOS" (
+	"folio" char(7) NOT NULL,
+	"codigo_barras" bigint NOT NULL,
 	monto money NOT NULL,
 	cantidad smallint NOT NULL,
-	CONSTRAINT "many_VENTA_has_many_ARTIC ULO_pk" PRIMARY KEY ("folio_VENTA","codigo_barras_ARTIC ULO")
+	CONSTRAINT "muchas_VENTAS_tienen_muchos_ARTICULOS_pk" PRIMARY KEY ("folio","codigo_barras")
 );
 -- ddl-end --
 
 -- object: "VENTA_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."many_VENTA_has_many_ARTIC ULO" DROP CONSTRAINT IF EXISTS "VENTA_fk" CASCADE;
-ALTER TABLE public."many_VENTA_has_many_ARTIC ULO" ADD CONSTRAINT "VENTA_fk" FOREIGN KEY ("folio_VENTA")
+ALTER TABLE public."muchas_VENTAS_tienen_muchos_ARTICULOS" ADD CONSTRAINT "VENTA_fk" FOREIGN KEY ("folio")
 REFERENCES public."VENTA" (folio) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: "ARTIC ULO_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."many_VENTA_has_many_ARTIC ULO" DROP CONSTRAINT IF EXISTS "ARTIC ULO_fk" CASCADE;
-ALTER TABLE public."many_VENTA_has_many_ARTIC ULO" ADD CONSTRAINT "ARTIC ULO_fk" FOREIGN KEY ("codigo_barras_ARTIC ULO")
-REFERENCES public."ARTIC ULO" (codigo_barras) MATCH FULL
+ALTER TABLE public."muchas_VENTAS_tienen_muchos_ARTICULOS" ADD CONSTRAINT "ARTICULO_fk" FOREIGN KEY ("codigo_barras")
+REFERENCES public."ARTICULO" (codigo_barras) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: "CLIENTE_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."VENTA" DROP CONSTRAINT IF EXISTS "CLIENTE_fk" CASCADE;
-ALTER TABLE public."VENTA" ADD CONSTRAINT "CLIENTE_fk" FOREIGN KEY ("rfc_CLIENTE")
+ALTER TABLE public."VENTA" ADD CONSTRAINT "CLIENTE_fk" FOREIGN KEY ("rfc")
 REFERENCES public."CLIENTE" (rfc) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: "EMPLEADO_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."VENTA" DROP CONSTRAINT IF EXISTS "EMPLEADO_fk" CASCADE;
-ALTER TABLE public."VENTA" ADD CONSTRAINT "EMPLEADO_fk" FOREIGN KEY ("id_empleado_EMPLEADO")
+ALTER TABLE public."VENTA" ADD CONSTRAINT "EMPLEADO_fk" FOREIGN KEY ("id_empleado")
 REFERENCES public."EMPLEADO" (id_empleado) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: "EMPLEADO_fk1" | type: CONSTRAINT --
 -- ALTER TABLE public."VENTA" DROP CONSTRAINT IF EXISTS "EMPLEADO_fk1" CASCADE;
-ALTER TABLE public."VENTA" ADD CONSTRAINT "EMPLEADO_fk1" FOREIGN KEY ("id_empleado_EMPLEADO1")
+ALTER TABLE public."VENTA" ADD CONSTRAINT "EMPLEADO_fk1" FOREIGN KEY ("id_empleado1")
 REFERENCES public."EMPLEADO" (id_empleado) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: "SUCURSAL_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."EMPLEADO" DROP CONSTRAINT IF EXISTS "SUCURSAL_fk" CASCADE;
-ALTER TABLE public."EMPLEADO" ADD CONSTRAINT "SUCURSAL_fk" FOREIGN KEY ("id_sucursal_SUCURSAL")
+ALTER TABLE public."EMPLEADO" ADD CONSTRAINT "SUCURSAL_fk" FOREIGN KEY ("id_sucursal")
 REFERENCES public."SUCURSAL" (id_sucursal) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: "EMPLEADO_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."EMPLEADO" DROP CONSTRAINT IF EXISTS "EMPLEADO_fk" CASCADE;
-ALTER TABLE public."EMPLEADO" ADD CONSTRAINT "EMPLEADO_fk" FOREIGN KEY ("id_empleado_EMPLEADO")
+ALTER TABLE public."EMPLEADO" ADD CONSTRAINT "EMPLEADO_fk" FOREIGN KEY ("id_empleado")
 REFERENCES public."EMPLEADO" (id_empleado) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
