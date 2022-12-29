@@ -8,13 +8,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Material App',
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Material App Bar'),
+          title: const Center(
+            child: Text(
+              'Muebleria Codders Postgres',
+            ),
+          ),
         ),
         body: const Center(
-          child: Text('Hello World'),
+          child: Text(
+            'App de uso de Postgres para obtener información',
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
