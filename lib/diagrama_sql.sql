@@ -161,58 +161,58 @@ CREATE TABLE public.SUCURSAL (
 ALTER TABLE public.SUCURSAL OWNER TO mdthlconjlitvq;
 -- ddl-end --
 
--- object: public."many_PROVEEDOR_has_many_ARTIC ULO" | type: TABLE --
--- DROP TABLE IF EXISTS public."many_PROVEEDOR_has_many_ARTIC ULO" CASCADE;
-CREATE TABLE public.muchos_PROVEEDORES_tienen_muchos_ARTICULOS (
+-- object: public."PROVEE" | type: TABLE --
+-- DROP TABLE IF EXISTS public."PROVEE" CASCADE;
+CREATE TABLE public.PROVEE (
 	"rfc" varchar(13) NOT NULL,
 	"codigo_barras" bigint NOT NULL,
 	fecha_comienzo date NOT NULL,
-	CONSTRAINT "muchos_PROVEEDORES_tienen_muchos_ARTICULOS_pk" PRIMARY KEY ("rfc","codigo_barras")
+	CONSTRAINT "PROVEE_pk" PRIMARY KEY ("rfc","codigo_barras")
 );
 -- ddl-end --
 
 -- object: "PROVEEDOR_fk" | type: CONSTRAINT --
--- ALTER TABLE public."many_PROVEEDOR_has_many_ARTIC ULO" DROP CONSTRAINT IF EXISTS "PROVEEDOR_fk" CASCADE;
-ALTER TABLE public.muchos_PROVEEDORES_tienen_muchos_ARTICULOS ADD CONSTRAINT "PROVEEDOR_fk" FOREIGN KEY ("rfc")
+-- ALTER TABLE public."PROVEE" DROP CONSTRAINT IF EXISTS "PROVEEDOR_fk" CASCADE;
+ALTER TABLE public.PROVEE ADD CONSTRAINT "PROVEEDOR_fk" FOREIGN KEY ("rfc")
 REFERENCES public.PROVEEDOR (rfc) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: "ARTICULO_fk" | type: CONSTRAINT --
--- ALTER TABLE public."many_PROVEEDOR_has_many_ARTIC ULO" DROP CONSTRAINT IF EXISTS "ARTIC ULO_fk" CASCADE;
-ALTER TABLE public.muchos_PROVEEDORES_tienen_muchos_ARTICULOS ADD CONSTRAINT "ARTICULO_fk" FOREIGN KEY ("codigo_barras")
+-- ALTER TABLE public."PROVEE" DROP CONSTRAINT IF EXISTS "ARTIC ULO_fk" CASCADE;
+ALTER TABLE public.PROVEE ADD CONSTRAINT "ARTICULO_fk" FOREIGN KEY ("codigo_barras")
 REFERENCES public.ARTICULO (codigo_barras) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: "CATEGORIA_fk" | type: CONSTRAINT --
--- ALTER TABLE public."ARTIC ULO" DROP CONSTRAINT IF EXISTS "CATEGORIA_fk" CASCADE;
+-- ALTER TABLE public."ARTICULO" DROP CONSTRAINT IF EXISTS "CATEGORIA_fk" CASCADE;
 ALTER TABLE public.ARTICULO ADD CONSTRAINT "CATEGORIA_fk" FOREIGN KEY ("id_categoria")
 REFERENCES public.CATEGORIA (id_categoria) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
--- object: public."many_VENTA_has_many_ARTIC ULO" | type: TABLE --
--- DROP TABLE IF EXISTS public."many_VENTA_has_many_ARTIC ULO" CASCADE;
-CREATE TABLE public.muchas_VENTAS_tienen_muchos_ARTICULOS (
+-- object: public."ES_VENDIDO" | type: TABLE --
+-- DROP TABLE IF EXISTS public."ES_VENDIDO" CASCADE;
+CREATE TABLE public.ES_VENDIDO (
 	"folio" char(7) NOT NULL,
 	"codigo_barras" bigint NOT NULL,
 	monto money NOT NULL,
 	cantidad smallint NOT NULL,
-	CONSTRAINT "muchas_VENTAS_tienen_muchos_ARTICULOS_pk" PRIMARY KEY ("folio","codigo_barras")
+	CONSTRAINT "ES_VENDIDO_pk" PRIMARY KEY ("folio","codigo_barras")
 );
 -- ddl-end --
 
 -- object: "VENTA_fk" | type: CONSTRAINT --
--- ALTER TABLE public."many_VENTA_has_many_ARTIC ULO" DROP CONSTRAINT IF EXISTS "VENTA_fk" CASCADE;
-ALTER TABLE public.muchas_VENTAS_tienen_muchos_ARTICULOS ADD CONSTRAINT "VENTA_fk" FOREIGN KEY ("folio")
+-- ALTER TABLE public."ES_VENDIDO" DROP CONSTRAINT IF EXISTS "VENTA_fk" CASCADE;
+ALTER TABLE public.ES_VENDIDO ADD CONSTRAINT "VENTA_fk" FOREIGN KEY ("folio")
 REFERENCES public.VENTA (folio) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
--- object: "ARTIC ULO_fk" | type: CONSTRAINT --
--- ALTER TABLE public."many_VENTA_has_many_ARTIC ULO" DROP CONSTRAINT IF EXISTS "ARTIC ULO_fk" CASCADE;
-ALTER TABLE public.muchas_VENTAS_tienen_muchos_ARTICULOS ADD CONSTRAINT "ARTICULO_fk" FOREIGN KEY ("codigo_barras")
+-- object: "ARTICULO_fk" | type: CONSTRAINT --
+-- ALTER TABLE public."ES_VENDIDO" DROP CONSTRAINT IF EXISTS "ARTIC ULO_fk" CASCADE;
+ALTER TABLE public.ES_VENDIDO ADD CONSTRAINT "ARTICULO_fk" FOREIGN KEY ("codigo_barras")
 REFERENCES public.ARTICULO (codigo_barras) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
@@ -251,5 +251,4 @@ ALTER TABLE public.EMPLEADO ADD CONSTRAINT "EMPLEADO_fk" FOREIGN KEY ("id_emplea
 REFERENCES public.EMPLEADO (id_empleado) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
-
 
