@@ -19,7 +19,7 @@ CREATE TABLE public.ARTICULO (
 	precio_compra money NOT NULL,
 	precio_venta money NOT NULL,
 	stock smallint NOT NULL,
-	fotografia bytea NOT NULL,
+	fotografia text NOT NULL,
 	"id_categoria" integer NOT NULL,
 	CONSTRAINT "ARTICULO_pk" PRIMARY KEY (codigo_barras)
 );
@@ -129,9 +129,10 @@ ALTER TABLE public.EMPLEADO OWNER TO mdthlconjlitvq;
 -- object: public."TELEFONO" | type: TABLE --
 -- DROP TABLE IF EXISTS public."TELEFONO" CASCADE;
 CREATE TABLE public.TELEFONO (
+	num_tel serial NOT NULL,
 	telefono_empleado bigint NOT NULL,
 	"id_empleado" integer NOT NULL,
-	CONSTRAINT "TELEFONO_pk" PRIMARY KEY (telefono_empleado)
+	CONSTRAINT "TELEFONO_pk" PRIMARY KEY (num_tel,id_empleado)
 );
 -- ddl-end --
 ALTER TABLE public.TELEFONO OWNER TO mdthlconjlitvq;
