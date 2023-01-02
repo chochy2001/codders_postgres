@@ -1,6 +1,5 @@
-import 'package:codders_postgres/postgres_connection.dart';
-import 'package:postgres/postgres.dart';
 import 'package:flutter/material.dart';
+import 'package:codders_postgres/screens/screens.dart';
 
 void main() => runApp(const MyApp());
 
@@ -9,66 +8,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //Conectandonos a la base de datos
-    PostgresConnection postgresConnection = PostgresConnection();
-    postgresConnection.connect();
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      title: 'Muebleria Codders',
-      home: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Center(
-              child: Text(
-                'Muebleria Codders Postgres',
-              ),
-            ),
-          ),
-          body: Center(
-            child: ListView(
-              //centrar listview
-
-              scrollDirection: Axis.vertical,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Center(
-                      child: Text(
-                        'App de uso de Postgres para obtener información\n',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Center(
-                      child: ButtonBar(
-                        mainAxisSize: MainAxisSize.min,
-                        alignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              postgresConnection.selectAllArticles();
-                            },
-                            child: const Text('Mostrar todos los articulos'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              postgresConnection.selectAllCustomers();
-                            },
-                            child: const Text('Mostrar todos los clientes'),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
+      //theme: ThemeData.dark(),
+      theme: ThemeData.light().copyWith(
+        hoverColor: Colors.deepPurple,
+        primaryColor: Colors.deepPurple,
+        scaffoldBackgroundColor: Colors.grey[200],
+        appBarTheme: const AppBarTheme(
+          elevation: 10,
+          color: Colors.deepPurple,
         ),
+        colorScheme:
+            ColorScheme.fromSwatch().copyWith(secondary: Colors.deepPurple),
+        focusColor: Colors.deepPurple,
       ),
+      initialRoute: 'buttons_show_sql',
+      routes: {
+        'login': (context) => const EmployeeLogin(),
+        'buttons_show_sql': (context) => const ButtonsShowSql(),
+      },
     );
   }
 }

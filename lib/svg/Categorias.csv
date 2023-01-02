@@ -10,3 +10,8 @@ id_categoria,nombre,descripcion
 10,laminado,muebles de laminado
 11,marmol,muebles de marmol
 12,granito,muebles de granito
+13,acero,muebles de acero
+14,aluminio,muebles de aluminio
+15,teka,muebles de teka
+
+
