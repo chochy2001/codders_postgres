@@ -46,7 +46,7 @@ ALTER TABLE public.CATEGORIA OWNER TO mdthlconjlitvq;
 CREATE TABLE public.PROVEEDOR (
 	rfc varchar(13) NOT NULL,
 	telefono bigint NOT NULL,
-	razon_social varchar(50) NOT NULL,
+	razon_social varchar(50) UNIQUE NOT NULL,
 	cuenta_pago bigint NOT NULL,
 	numero_exterior smallint NOT NULL,
 	estado varchar(40) NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE public.CLIENTE (
 	numero_interior smallint NOT NULL,
 	numero_exterior smallint NOT NULL,
 	estado varchar(50) NOT NULL,
-	razon_social varchar(150) NULL,
+	razon_social varchar(150) UNIQUE NULL,
 	CONSTRAINT "CLIENTE_pk" PRIMARY KEY (rfc)
 );
 -- ddl-end --
@@ -105,8 +105,8 @@ ALTER TABLE public."CLIENTE" OWNER TO mdthlconjlitvq;
 -- DROP TABLE IF EXISTS public."EMPLEADO" CASCADE;
 CREATE TABLE public.EMPLEADO(
 	id_empleado integer NOT NULL,
-	curp char(18) NOT NULL,
-	rfc char(13) NOT NULL,
+	curp char(18) UNIQUE NOT NULL,
+	rfc char(13) UNIQUE NOT NULL,
 	nombre varchar(60) NOT NULL,
 	apellido_paterno varchar(40) NOT NULL,
 	apellido_materno varchar(40),
