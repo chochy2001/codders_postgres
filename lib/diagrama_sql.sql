@@ -66,7 +66,7 @@ CREATE TABLE public.VENTA (
 	fecha timestamp NOT NULL,
 	monto_total money NOT NULL,
 	cantidad_total smallint NOT NULL,
-	"rfc_CLIENTE" varchar(13) NOT NULL,
+	"rfc_CLIENTE" char(13) NULL,
 	"id_empleado" integer NOT NULL,
 	"id_empleado1" integer NOT NULL,
 	CONSTRAINT "VENTA_pk" PRIMARY KEY (folio)
@@ -82,7 +82,7 @@ ALTER TABLE public."VENTA" OWNER TO mdthlconjlitvq;
 -- object: public."CLIENTE" | type: TABLE --
 -- DROP TABLE IF EXISTS public."CLIENTE" CASCADE;
 CREATE TABLE public.CLIENTE (
-	rfc varchar(13) NOT NULL,
+	rfc char(13) NOT NULL,
 	email varchar(100) NOT NULL,
 	nombre varchar(60) NOT NULL,
 	apellido_paterno varchar(40) NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE public.CLIENTE (
 	numero_interior smallint NOT NULL,
 	numero_exterior smallint NOT NULL,
 	estado varchar(50) NOT NULL,
-	razon_social varchar(50) NOT NULL,
+	razon_social varchar(150) NULL,
 	CONSTRAINT "CLIENTE_pk" PRIMARY KEY (rfc)
 );
 -- ddl-end --
@@ -172,6 +172,15 @@ CREATE TABLE public.PROVEE (
 );
 -- ddl-end --
 
+-- object: "Verificadores de valores positivos" | type: CONSTRAINT --
+ALTER TABLE public.ARTICULO ADD CONSTRAINT "verifica_Stock" CHECK(stock>=0);
+ALTER TABLE public.ARTICULO ADD CONSTRAINT "verifica_PreV" CHECK(precio_venta>='0.00');
+ALTER TABLE public.ARTICULO ADD CONSTRAINT "verifica_PreC" CHECK(precio_compra>='0.00');
+ALTER TABLE public.ES_VENDIDO ADD CONSTRAINT "verifica_MonArt" CHECK(monto>='0.00');
+ALTER TABLE public.ES_VENDIDO ADD CONSTRAINT "verifica_CantArt" CHECK(cantidad>=0);
+ALTER TABLE public.VENTA ADD CONSTRAINT "verifica_CantTot" CHECK(cantidad_total>=0);
+-- ddl-end --
+
 -- object: "PROVEEDOR_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."PROVEE" DROP CONSTRAINT IF EXISTS "PROVEEDOR_fk" CASCADE;
 ALTER TABLE public.PROVEE ADD CONSTRAINT "PROVEEDOR_fk" FOREIGN KEY ("rfc")
@@ -220,7 +229,7 @@ ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- object: "CLIENTE_fk" | type: CONSTRAINT --
 -- ALTER TABLE public."VENTA" DROP CONSTRAINT IF EXISTS "CLIENTE_fk" CASCADE;
-ALTER TABLE public.VENTA ADD CONSTRAINT "CLIENTE_fk" FOREIGN KEY ("rfc")
+ALTER TABLE public.VENTA ADD CONSTRAINT "CLIENTE_fk" FOREIGN KEY ("rfc_CLIENTE")
 REFERENCES public.CLIENTE (rfc) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
