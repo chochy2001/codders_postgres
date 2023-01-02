@@ -23,3 +23,18 @@ $emple_sucur$ LANGUAGE PLPGSQL;
 
 CREATE TRIGGER emple_sucur BEFORE INSERT OR UPDATE ON venta
 FOR EACH ROW EXECUTE FUNCTION emple_sucur();
+
+
+--Trigger para agregar por defecto el nombre completo en CLIENTE para razón social
+CREATE OR REPLACE function razonS_Default() RETURNS TRIGGER AS $razonS_Default$
+BEGIN
+	IF 	(new.razon_social is NULL) THEN
+		update cliente set razon_social=CONCAT(new.nombre,' ',new.apellido_paterno,' ',new.apellido_materno) WHERE rfc=new.rfc;
+	END IF;
+		RETURN NEW;
+END;
+$razonS_Default$ LANGUAGE PLPGSQL;
+
+
+CREATE TRIGGER razonS_Default AFTER INSERT OR UPDATE ON cliente
+FOR EACH ROW EXECUTE FUNCTION razonS_Default();
