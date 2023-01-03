@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:postgres/postgres.dart';
 
@@ -17,10 +20,28 @@ class PostgresConnection {
   Future connect() async {
     try {
       await connection.open();
-      print("Connected to PostgreSQL");
+      if (kDebugMode) {
+        print("Connected to PostgreSQL");
+      }
     } catch (e) {
-      print('error');
-      print(e.toString());
+      if (kDebugMode) {
+        print('error');
+        print(e.toString());
+      }
+    }
+  }
+
+  Future disconnect() async {
+    try {
+      await connection.close();
+      if (kDebugMode) {
+        print("Disconnected to PostgreSQL");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('error');
+        print(e.toString());
+      }
     }
   }
 
@@ -36,7 +57,7 @@ class PostgresConnection {
     }
   }
 
-  Future selectAllCategories() async {
+  Future<List<List<dynamic>>> selectAllCategories() async {
     List<List<dynamic>> results =
         await connection.query("Select * from categoria");
     debugPrint("seleccion de todos las categorias");
@@ -46,6 +67,27 @@ class PostgresConnection {
         print(row);
       }
     }
+    return results;
+  }
+
+  ListView showCategories(List<List<dynamic>> list) {
+    return ListView.builder(
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        final row = list[index];
+        return Column(
+          children: [
+            Text(row[0]),
+            Text(row[1]),
+            Text(row[2]),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<ListView> mostrarCategorias() async {
+    return showCategories(await selectAllCategories());
   }
 
   Future selectAllCustomers() async {
