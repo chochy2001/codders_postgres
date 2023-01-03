@@ -38,3 +38,50 @@ $razonS_Default$ LANGUAGE PLPGSQL;
 
 CREATE TRIGGER razonS_Default AFTER INSERT OR UPDATE ON cliente
 FOR EACH ROW EXECUTE FUNCTION razonS_Default();
+
+
+--Trigger para calcular el valor del monto por articulo en ES_VENDIDO
+CREATE OR REPLACE function montoXArt() RETURNS TRIGGER AS $montoXArt$
+DECLARE montoTot money;
+BEGIN
+	SELECT precio_venta INTO montoTot FROM articulo AS ar WHERE ar.codigo_barras=new.codigo_barras;
+	IF	(TG_OP='INSERT') THEN
+		update es_vendido set monto=(montoTot*new.cantidad)  WHERE codigo_barras=new.codigo_barras AND folio=new.folio;
+	END IF;
+	RETURN NEW;
+END;
+$montoXArt$ LANGUAGE PLPGSQL;
+
+
+CREATE TRIGGER montoXArt AFTER INSERT OR UPDATE ON ES_VENDIDO
+FOR EACH ROW EXECUTE FUNCTION montoXArt();
+
+--Trigger para generar el formato del ID de la VENTA (MBL-XXX)
+CREATE OR REPLACE FUNCTION venta_formato() RETURNS TRIGGER AS $$
+DECLARE valAct smallint;
+BEGIN
+	valAct=CAST(new.folio AS smallint);
+	IF(valAct<10) THEN
+		UPDATE venta set folio=CONCAT('MBL-00',valAct) where folio=NEW.folio;
+	ELSEIF(valAct<100) THEN
+		UPDATE venta set folio=CONCAT('MBL-0',valAct) where folio=NEW.folio;
+	ELSEIF(valAct<1000) THEN
+		UPDATE venta set folio=CONCAT('MBL-',valAct) where folio=NEW.folio;
+	END IF;
+	RETURN NEW;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER venta_formato AFTER INSERT ON venta
+FOR EACH ROW EXECUTE FUNCTION venta_formato();
+
+CREATE SEQUENCE secue_folio_venta AS smallint
+	INCREMENT 1
+	MINVALUE 1
+	MAXVALUE 999
+	START 1
+	NO CYCLE
+	OWNED BY VENTA.folio;
+
+alter sequence secue_folio_venta restart [with numero];
+insert into venta values(nextval('secue_folio_venta'),now(),...);
