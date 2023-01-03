@@ -207,7 +207,7 @@ ON DELETE RESTRICT ON UPDATE CASCADE;
 CREATE TABLE public.ES_VENDIDO (
 	"folio" char(7) NOT NULL,
 	"codigo_barras" bigint NOT NULL,
-	monto money NOT NULL,
+	monto money NULL,
 	cantidad smallint NOT NULL,
 	CONSTRAINT "ES_VENDIDO_pk" PRIMARY KEY ("folio","codigo_barras")
 );
