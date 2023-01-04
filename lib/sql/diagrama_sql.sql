@@ -16,8 +16,8 @@ CREATE DATABASE codders_muebleria;
 CREATE TABLE public.ARTICULO (
 	codigo_barras bigint NOT NULL,
 	nombre varchar(50) NOT NULL,
-	precio_compra money NOT NULL,
-	precio_venta money NOT NULL,
+	precio_compra numeric(8,2) NOT NULL,
+	precio_venta numeric(8,2) NOT NULL,
 	stock smallint NOT NULL,
 	fotografia text NOT NULL,
 	"id_categoria" integer NOT NULL,
@@ -64,7 +64,7 @@ ALTER TABLE public.PROVEEDOR OWNER TO mdthlconjlitvq;
 CREATE TABLE public.VENTA (
 	folio char(7) NOT NULL,
 	fecha timestamp NOT NULL,
-	monto_total money NOT NULL,
+	monto_total numeric(8,2) NOT NULL,
 	cantidad_total smallint NOT NULL,
 	"rfc_CLIENTE" char(13) NULL,
 	"id_empleado" integer NOT NULL,
@@ -174,11 +174,12 @@ CREATE TABLE public.PROVEE (
 
 -- object: "Verificadores de valores positivos" | type: CONSTRAINT --
 ALTER TABLE public.ARTICULO ADD CONSTRAINT "verifica_Stock" CHECK(stock>=0);
-ALTER TABLE public.ARTICULO ADD CONSTRAINT "verifica_PreV" CHECK(precio_venta>='0.00');
-ALTER TABLE public.ARTICULO ADD CONSTRAINT "verifica_PreC" CHECK(precio_compra>='0.00');
-ALTER TABLE public.ES_VENDIDO ADD CONSTRAINT "verifica_MonArt" CHECK(monto>='0.00');
+ALTER TABLE public.ARTICULO ADD CONSTRAINT "verifica_PreV" CHECK(precio_venta>=0.00);
+ALTER TABLE public.ARTICULO ADD CONSTRAINT "verifica_PreC" CHECK(precio_compra>=0.00);
+ALTER TABLE public.ES_VENDIDO ADD CONSTRAINT "verifica_MonArt" CHECK(monto>=0.00);
 ALTER TABLE public.ES_VENDIDO ADD CONSTRAINT "verifica_CantArt" CHECK(cantidad>=0);
 ALTER TABLE public.VENTA ADD CONSTRAINT "verifica_CantTot" CHECK(cantidad_total>=0);
+ALTER TABLE public.VENTA ADD CONSTRAINT "verifica_MontTot" CHECK(monto_total>=0.00);
 -- ddl-end --
 
 -- object: "PROVEEDOR_fk" | type: CONSTRAINT --
@@ -207,7 +208,7 @@ ON DELETE RESTRICT ON UPDATE CASCADE;
 CREATE TABLE public.ES_VENDIDO (
 	"folio" char(7) NOT NULL,
 	"codigo_barras" bigint NOT NULL,
-	monto money NULL,
+	monto numeric(8,2) NULL,
 	cantidad smallint NOT NULL,
 	CONSTRAINT "ES_VENDIDO_pk" PRIMARY KEY ("folio","codigo_barras")
 );
