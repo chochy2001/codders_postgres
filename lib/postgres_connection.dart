@@ -76,7 +76,8 @@ class PostgresConnection {
 
   selectAllArticles() async {
     try {
-      resultsArticulos = await connection.query("Select * from articulo");
+      resultsArticulos = await connection
+          .query("Select nombre,precio_venta,stock from articulo");
       debugPrint("seleccion de todos los articulos");
 
       for (final row in resultsArticulos) {
