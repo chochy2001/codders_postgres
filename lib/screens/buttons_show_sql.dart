@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:codders_postgres/postgres_connection.dart';
@@ -19,16 +20,19 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
     super.initState();
   }
 
+  bool isVisible = true;
+  String textoBoton = "Mostrar";
+
+  PostgresConnection postgresConnection = PostgresConnection();
+
   @override
   Widget build(BuildContext context) {
     //Conectandonos a la base de datos
-    PostgresConnection postgresConnection = PostgresConnection();
     postgresConnection.connect();
 
-    //create a timer
-    Timer(const Duration(seconds: 5), () {
-      debugPrint(results.toString());
-      //postgresConnection.selectAllArticles();
+    postgresConnection.selectImageArticles();
+    Timer(const Duration(seconds: 4), () {
+      debugPrint(resultsFotografias.first.toString());
     });
 
     return Scaffold(
@@ -55,62 +59,156 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
                     mainAxisSize: MainAxisSize.min,
                     alignment: MainAxisAlignment.center,
                     children: [
+                      MaterialButton(
+                        onPressed: () {
+                          setState(() {
+                            isVisible = !isVisible;
+                            if (isVisible) {
+                              textoBoton = "Mostrar Todo";
+                            } else {
+                              textoBoton = "Ocultar Todo";
+                            }
+                          });
+                        },
+                        child: Text(textoBoton),
+                      ),
+                      /*
+                      Image.memory(
+                        const Base64Decoder()
+                            .convert(resultsFotografias.first.toString()),
+                        width: 200.0,
+                        height: 170.0,
+                      ),
+                      Image.memory(
+                        base64Decode(postgresConnection
+                            .selectImageArticles()
+                            .toString()),
+                        //base64Decode(resultsFotografias.first.toString()),
+                        width: 200.0,
+                        height: 170.0,
+                      ),
+                       */
+                      Image.asset('lib/svg/imgMuebleria/bar.jpg'),
                       TextButton(
                         onPressed: () {
-                          postgresConnection.selectAllArticles();
+                          setState(() {
+                            postgresConnection.selectAllArticles();
+                            debugPrint(resultsArticulos.toString());
+                          });
                         },
                         child: const Text('Mostrar todos los Articulos'),
                       ),
+                      Visibility(
+                        visible: isVisible,
+                        child: Text(
+                          mostrarDatos(resultsArticulos),
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
-                          postgresConnection.selectAllCategories();
+                          setState(() {
+                            postgresConnection.selectAllCategories();
+                            debugPrint(resultsCategorias.toString());
+                          });
                         },
                         child: const Text('Mostrar todas las Categorias '),
                       ),
+                      Visibility(
+                        visible: isVisible,
+                        child: Text(
+                          mostrarDatos(resultsCategorias),
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
-                          postgresConnection.selectAllCustomers();
+                          setState(() {
+                            postgresConnection.selectAllCustomers();
+                            debugPrint(resultsCategorias.toString());
+                          });
                         },
                         child: const Text('Mostrar todos los Clientes'),
                       ),
+                      Visibility(
+                        visible: isVisible,
+                        child: Text(
+                          mostrarDatos(resultsClientes),
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
-                          postgresConnection.selectAllEmployees();
+                          setState(() {
+                            postgresConnection.selectAllEmployees();
+                            debugPrint(resultsEmpleados.toString());
+                          });
                         },
                         child: const Text('Mostrar todos los Empleados'),
                       ),
+                      Visibility(
+                        visible: isVisible,
+                        child: Text(
+                          mostrarDatos(resultsEmpleados),
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
-                          postgresConnection.selectAllProviders();
+                          setState(() {
+                            postgresConnection.selectAllProviders();
+                            debugPrint(resultsProveedores.toString());
+                          });
                         },
                         child: const Text('Mostrar todos los Proveedores'),
                       ),
+                      Visibility(
+                        visible: isVisible,
+                        child: Text(
+                          mostrarDatos(resultsProveedores),
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
-                          postgresConnection.selectAllBranches();
+                          setState(() {
+                            postgresConnection.selectAllBranches();
+                            debugPrint(resultsSucursales.toString());
+                          });
                         },
                         child: const Text('Mostrar todas las Sucursales'),
                       ),
+                      Visibility(
+                        visible: isVisible,
+                        child: Text(
+                          mostrarDatos(resultsSucursales),
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
-                          postgresConnection.selectAllTelephones();
+                          setState(() {
+                            postgresConnection.selectAllTelephones();
+                            debugPrint(resultsTelefono.toString());
+                          });
                         },
                         child: const Text('Mostrar todos los Teléfonos'),
                       ),
+                      Visibility(
+                        visible: isVisible,
+                        child: Text(
+                          mostrarDatos(resultsTelefono),
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
-                          postgresConnection.selectAllSales();
+                          setState(() {
+                            postgresConnection.selectAllSales();
+                            debugPrint(resultsVentas.toString());
+                          });
                         },
                         child: const Text('Mostrar todas las Ventas'),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          //postgresConnection.selectAllTelephones();
-                          debugPrint(results.toString());
-                        },
-                        child: const Text('Mostrar todos los telefonos BUENO'),
+                      Visibility(
+                        visible: isVisible,
+                        child: Text(
+                          resultsVentas.toString(),
+                        ),
                       ),
-                      Text('$results'),
                       TextButton(
                         onPressed: () {
                           Navigator.pushNamed(context, 'login');
@@ -127,5 +225,14 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
         ),
       ),
     );
+  }
+
+  mostrarDatos(results) {
+    final List<List<dynamic>> resultados = [];
+
+    for (final row in results) {
+      resultados.add(row);
+    }
+    return resultados.toString();
   }
 }

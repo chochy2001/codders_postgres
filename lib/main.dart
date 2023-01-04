@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       //initialRoute: 'buttons_show_sql',
       initialRoute: 'inicio',
       routes: {
-        'inicio': (context) => Inicio(),
+        'inicio': (context) => const Inicio(),
         'login': (context) => const EmployeeLogin(),
         'buttons_show_sql': (context) => const ButtonsShowSql(),
       },

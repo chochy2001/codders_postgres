@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:postgres/postgres.dart';
 
@@ -15,7 +14,15 @@ var connection = PostgreSQLConnection(
   allowClearTextPassword: false,
   useSSL: true,
 );
-List<List<dynamic>> results = [];
+List<List<dynamic>> resultsArticulos = [];
+List<List<dynamic>> resultsCategorias = [];
+List<List<dynamic>> resultsClientes = [];
+List<List<dynamic>> resultsEmpleados = [];
+List<List<dynamic>> resultsProveedores = [];
+List<List<dynamic>> resultsSucursales = [];
+List<List<dynamic>> resultsTelefono = [];
+List<List<dynamic>> resultsVentas = [];
+List<List<dynamic>> resultsFotografias = [];
 
 class PostgresConnection {
   Future connect() async {
@@ -46,153 +53,176 @@ class PostgresConnection {
     }
   }
 
-  Future selectAllArticles() async {
-    List<List<dynamic>> results =
-        await connection.query("Select * from articulo");
-    debugPrint("seleccion de todos los articulos");
-
-    for (final row in results) {
-      if (kDebugMode) {
-        print(row);
-      }
-    }
-  }
-
-  Future<List<List<dynamic>>> selectAllCategories() async {
-    List<List<dynamic>> results =
-        await connection.query("Select * from categoria");
-    debugPrint("seleccion de todos las categorias");
-
-    for (final row in results) {
-      if (kDebugMode) {
-        print(row);
-      }
-    }
-    return results;
-  }
-
-  ListView showCategories(List<List<dynamic>> list) {
-    return ListView.builder(
-      itemCount: list.length,
-      itemBuilder: (context, index) {
-        final row = list[index];
-        return Column(
-          children: [
-            Text(row[0]),
-            Text(row[1]),
-            Text(row[2]),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<ListView> mostrarCategorias() async {
-    return showCategories(await selectAllCategories());
-  }
-
-  Future<ListView> mostrarTelefonos() async {
-    return showCategories(await selectAllTelephones());
-  }
-
-  Future selectAllCustomers() async {
-    List<List<dynamic>> results =
-        await connection.query("Select * from cliente");
-    debugPrint("seleccion de todos los clientes");
-
-    for (final row in results) {
-      if (kDebugMode) {
-        print(row);
-      }
-    }
-  }
-
-  Future selectAllEmployees() async {
-    List<List<dynamic>> results =
-        await connection.query("Select * from empleado");
-    debugPrint("seleccion de todos los empleados");
-
-    for (final row in results) {
-      if (kDebugMode) {
-        print(row);
-      }
-    }
-    return results;
-  }
-
-  Future selectAllProviders() async {
-    List<List<dynamic>> results =
-        await connection.query("Select * from proveedor");
-    debugPrint("seleccion de todos los proveedores");
-
-    for (final row in results) {
-      if (kDebugMode) {
-        print(row);
-      }
-    }
-  }
-
-  Future selectAllBranches() async {
-    List<List<dynamic>> results =
-        await connection.query("Select * from sucursal");
-    debugPrint("seleccion de todas las sucursales");
-
-    for (final row in results) {
-      if (kDebugMode) {
-        print(row);
-      }
-    }
-  }
-
-  selectAllTelephones() async {
+  selectImageArticles() async {
     try {
-      results = await connection.query("Select * from telefono");
-      debugPrint("seleccion de todos los telefonos");
+      //todo cambiar a que sean todos los valores
+      resultsFotografias = await connection
+          .query("select fotografia from articulo where codigo_barras = 12344");
+      debugPrint("seleccion de fotografias");
 
-      for (final row in results) {
+      for (final row in resultsFotografias) {
         if (kDebugMode) {
           print(row);
         }
       }
-      return results;
+      return resultsFotografias;
     } catch (e) {
       if (kDebugMode) {
         print('error');
         print(e.toString());
       }
     }
-    /*List<List<dynamic>> results =
-        await connection.query("Select * from telefono");
-    debugPrint("seleccion de todos los tel");
-
-    List info = [];
-
-    for (final row in results) {
-      info.add(row);
-      if (kDebugMode) {
-        print(row);
-      }
-    }
-    return info;
-     */
   }
 
-  Future selectAllSales() async {
-    List<List<dynamic>> results = await connection.query("Select * from venta");
-    debugPrint("seleccion de todas las ventas");
+  selectAllArticles() async {
+    try {
+      resultsArticulos = await connection.query("Select * from articulo");
+      debugPrint("seleccion de todos los articulos");
 
-    for (final row in results) {
+      for (final row in resultsArticulos) {
+        if (kDebugMode) {
+          print(row);
+        }
+      }
+      return resultsArticulos;
+    } catch (e) {
       if (kDebugMode) {
-        print(row);
+        print('error');
+        print(e.toString());
       }
     }
   }
 
-  Future<List<List<dynamic>>> selectAllArticles1() async {
-    List<List<dynamic>> results =
-        await connection.query("Select * from articulo");
-    debugPrint("seleccion de todos los articulos");
+  selectAllCategories() async {
+    try {
+      resultsCategorias = await connection.query("Select * from categoria");
+      debugPrint("seleccion de todas las categorias");
 
-    return results;
+      for (final row in resultsCategorias) {
+        if (kDebugMode) {
+          print(row);
+        }
+      }
+      return resultsCategorias;
+    } catch (e) {
+      if (kDebugMode) {
+        print('error');
+        print(e.toString());
+      }
+    }
+  }
+
+  selectAllCustomers() async {
+    try {
+      resultsClientes = await connection.query("Select * from cliente ");
+      debugPrint("seleccion de todos los clientes");
+
+      for (final row in resultsClientes) {
+        if (kDebugMode) {
+          print(row);
+        }
+      }
+      return resultsClientes;
+    } catch (e) {
+      if (kDebugMode) {
+        print('error');
+        print(e.toString());
+      }
+    }
+  }
+
+  selectAllEmployees() async {
+    try {
+      resultsEmpleados = await connection.query("Select * from empleado");
+      debugPrint("seleccion de todas los empleados");
+
+      for (final row in resultsEmpleados) {
+        if (kDebugMode) {
+          print(row);
+        }
+      }
+      return resultsEmpleados;
+    } catch (e) {
+      if (kDebugMode) {
+        print('error');
+        print(e.toString());
+      }
+    }
+  }
+
+  selectAllProviders() async {
+    try {
+      resultsProveedores = await connection.query("Select * from proveedor");
+      debugPrint("seleccion de todas las sucursales");
+
+      for (final row in resultsProveedores) {
+        if (kDebugMode) {
+          print(row);
+        }
+      }
+      return resultsProveedores;
+    } catch (e) {
+      if (kDebugMode) {
+        print('error');
+        print(e.toString());
+      }
+    }
+  }
+
+  selectAllBranches() async {
+    try {
+      resultsSucursales = await connection.query("Select * from sucursal");
+      debugPrint("seleccion de todas las sucursales");
+
+      for (final row in resultsSucursales) {
+        if (kDebugMode) {
+          print(row);
+        }
+      }
+      return resultsSucursales;
+    } catch (e) {
+      if (kDebugMode) {
+        print('error');
+        print(e.toString());
+      }
+    }
+  }
+
+  selectAllTelephones() async {
+    try {
+      resultsTelefono = await connection.query("Select * from telefono");
+      debugPrint("seleccion de todos los telefonos");
+
+      for (final row in resultsTelefono) {
+        if (kDebugMode) {
+          print(row);
+        }
+      }
+      return resultsTelefono;
+    } catch (e) {
+      if (kDebugMode) {
+        print('error');
+        print(e.toString());
+      }
+    }
+  }
+
+  selectAllSales() async {
+    try {
+      resultsVentas = await connection.query("Select * from venta");
+      debugPrint("seleccion de todas las ventas");
+
+      for (final row in resultsVentas) {
+        if (kDebugMode) {
+          print(row);
+        }
+      }
+      return resultsVentas;
+    } catch (e) {
+      if (kDebugMode) {
+        print('error');
+        print(e.toString());
+      }
+    }
   }
 }
