@@ -15,6 +15,7 @@ var connection = PostgreSQLConnection(
   allowClearTextPassword: false,
   useSSL: true,
 );
+List<List<dynamic>> results = [];
 
 class PostgresConnection {
   Future connect() async {
@@ -90,6 +91,10 @@ class PostgresConnection {
     return showCategories(await selectAllCategories());
   }
 
+  Future<ListView> mostrarTelefonos() async {
+    return showCategories(await selectAllTelephones());
+  }
+
   Future selectAllCustomers() async {
     List<List<dynamic>> results =
         await connection.query("Select * from cliente");
@@ -112,6 +117,7 @@ class PostgresConnection {
         print(row);
       }
     }
+    return results;
   }
 
   Future selectAllProviders() async {
@@ -138,16 +144,37 @@ class PostgresConnection {
     }
   }
 
-  Future selectAllTelephones() async {
-    List<List<dynamic>> results =
+  selectAllTelephones() async {
+    try {
+      results = await connection.query("Select * from telefono");
+      debugPrint("seleccion de todos los telefonos");
+
+      for (final row in results) {
+        if (kDebugMode) {
+          print(row);
+        }
+      }
+      return results;
+    } catch (e) {
+      if (kDebugMode) {
+        print('error');
+        print(e.toString());
+      }
+    }
+    /*List<List<dynamic>> results =
         await connection.query("Select * from telefono");
     debugPrint("seleccion de todos los tel");
 
+    List info = [];
+
     for (final row in results) {
+      info.add(row);
       if (kDebugMode) {
         print(row);
       }
     }
+    return info;
+     */
   }
 
   Future selectAllSales() async {

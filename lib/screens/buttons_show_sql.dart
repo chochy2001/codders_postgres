@@ -1,14 +1,35 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:codders_postgres/postgres_connection.dart';
 
-class ButtonsShowSql extends StatelessWidget {
+class ButtonsShowSql extends StatefulWidget {
   const ButtonsShowSql({super.key});
+
+  @override
+  State<ButtonsShowSql> createState() => _ButtonsShowSqlState();
+}
+
+class _ButtonsShowSqlState extends State<ButtonsShowSql> {
+  //late List<Map<String, Map<String, dynamic>>> listaArticulos;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     //Conectandonos a la base de datos
     PostgresConnection postgresConnection = PostgresConnection();
     postgresConnection.connect();
+
+    //create a timer
+    Timer(const Duration(seconds: 5), () {
+      debugPrint(results.toString());
+      //postgresConnection.selectAllArticles();
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -82,6 +103,14 @@ class ButtonsShowSql extends StatelessWidget {
                         },
                         child: const Text('Mostrar todas las Ventas'),
                       ),
+                      TextButton(
+                        onPressed: () {
+                          //postgresConnection.selectAllTelephones();
+                          debugPrint(results.toString());
+                        },
+                        child: const Text('Mostrar todos los telefonos BUENO'),
+                      ),
+                      Text('$results'),
                       TextButton(
                         onPressed: () {
                           Navigator.pushNamed(context, 'login');
