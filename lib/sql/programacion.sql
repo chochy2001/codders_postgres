@@ -85,3 +85,41 @@ CREATE SEQUENCE secue_folio_venta AS smallint
 
 alter sequence secue_folio_venta restart [with numero];
 insert into venta values(nextval('secue_folio_venta'),now(),...);
+
+-- Creacion de tabla auxiliar con mismos atributos que tabla artículo (aquí se agregan productos con stock<3)
+CREATE TABLE low_stock (codigo_battas BIGINT, id_Categoria INTEGER, precio_venta MONEY, precio_compra MONEY, nombre VARCHAR(50), stock SMALLINT);
+
+-- Trigger para crear una tabla auxiliar para productos con stock menor a 3
+CREATE OR REPLACE FUNCTION eliminacion_2() RETURNS TRIGGER AS $$
+DECLARE cantidad smallint;
+	BEGIN
+		SELECT COUNT(*) INTO cantidad FROM articulos where stock<3;
+		IF(cantidad!=0) THEN
+			INSERT INTO low_stock (codigo_barras,id_categoria,precio_venta,precio_compra,nombre,stock) SELECT ar.codigo_barras,ar.id_categoria,ar.precio_venta, ar.precio_compra, ar.nombre, ar.stock FROM articulos AS ar WHERE ar.stock<3;
+		 	RAISE NOTICE 'El articulo no esta disponible';
+			DELETE FROM articulos WHERE stock<3;
+			RAISE NOTICE 'El articulo no esta disponible';
+			END IF;
+			RETURN NEW;
+	END;
+	LANGUAGE plpgsql;
+
+CREATE TRIGGER eliminacion_2 AFTER INSERT OR UPDATE OR DELETE ON articulos FOR EACH ROW EXECUTE PROCEDURE eliminacion_2();
+
+
+-- Tigger pare retornar productos desde tabla auxiliar a tabla de artículos para productos con stock mayor a 3
+CREATE OR REPLACE FUNCTION agregacion_2() RETURNS TRIGGER AS $$
+DECLARE amount smallint;
+	BEGIN
+		SELECT COUNT(*) INTO amount FROM low_stock where stock>3;
+		IF(amount!=0) THEN
+		INSERT INTO articulos (codigo_barras,id_categoria,precio_venta,precio_compra,nombre,stock) SELECT lw.codigo_barras,lw.id_categoria,lw.precio_venta, lw.precio_compra, lw.nombre, lw.stock FROM low_stock AS lw WHERE lw.stock>3;
+		RAISE NOTICE 'El articulo esta disponible';
+		DELETE FROM low_stock WHERE stock>3;
+		RAISE NOTICE 'El articulo esta disponible';
+		END IF;
+		RETURN NEW;
+	END;
+	$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER agregacion_2 AFTER INSERT OR UPDATE OR DELETE ON low_stock FOR EACH ROW EXECUTE PROCEDURE agregacion_2();
