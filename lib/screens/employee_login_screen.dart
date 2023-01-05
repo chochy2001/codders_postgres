@@ -26,7 +26,7 @@ class EmployeeLogin extends StatelessWidget {
                   Icon(
                     Icons.person_pin_outlined,
                     size: 50,
-                    color: Colors.deepPurple,
+                    color: Colors.black38,
                   ),
                 ],
               ),

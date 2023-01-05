@@ -76,15 +76,10 @@ class PostgresConnection {
 
   selectAllArticles() async {
     try {
-      resultsArticulos = await connection
-          .query("Select nombre,precio_venta,stock from articulo");
+      resultsArticulos = await connection.query(
+          "Select nombre,precio_venta,categoria,descripcion,empresa from vis_articulos_cat_prov");
       debugPrint("seleccion de todos los articulos");
 
-      for (final row in resultsArticulos) {
-        if (kDebugMode) {
-          print(row);
-        }
-      }
       return resultsArticulos;
     } catch (e) {
       if (kDebugMode) {
@@ -213,9 +208,19 @@ class PostgresConnection {
       resultsVentas = await connection.query("Select * from venta");
       debugPrint("seleccion de todas las ventas");
 
+      /*
       for (final row in resultsVentas) {
         if (kDebugMode) {
           print(row);
+        }
+      }
+     */
+      //Imprime todos los valores de la tabla
+      //todo
+      for (int i = 0; i < resultsVentas.length; i++) {
+        for (int j = 0; j < resultsVentas[i].length; j++) {
+          debugPrint(resultsVentas[i][j].toString());
+          //resultsVentas[i][j] = resultsVentas[i][j];
         }
       }
       return resultsVentas;

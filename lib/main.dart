@@ -1,4 +1,6 @@
 import 'package:codders_postgres/inicio.dart';
+import 'package:codders_postgres/widgets/login_categoria.dart';
+import 'package:codders_postgres/widgets/login_telefono.dart';
 import 'package:flutter/material.dart';
 import 'package:codders_postgres/screens/screens.dart';
 
@@ -13,6 +15,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       //theme: ThemeData.dark(),
       theme: ThemeData.light().copyWith(
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+          opacity: 100,
+          size: 10,
+        ),
         hoverColor: Colors.grey[900],
         primaryColor: Colors.black,
         scaffoldBackgroundColor: Colors.grey[200],
@@ -27,6 +34,8 @@ class MyApp extends StatelessWidget {
       initialRoute: 'inicio',
       routes: {
         'inicio': (context) => const Inicio(),
+        'categoria': (context) => const LoginCategoria(),
+        'telefono': (context) => const LoginTelefono(),
         'login': (context) => const EmployeeLogin(),
         'buttons_show_sql': (context) => const ButtonsShowSql(),
       },

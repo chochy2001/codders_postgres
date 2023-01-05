@@ -8,15 +8,15 @@ class InputDecorations {
   }) {
     return InputDecoration(
       enabledBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: Colors.deepPurple),
+        borderSide: BorderSide(color: Colors.black38),
       ),
       labelText: labelText,
       prefixIcon: prefixIcon != null
-          ? Icon(prefixIcon, color: Colors.deepPurple)
-          : const Icon(Icons.info_outline_sharp, color: Colors.deepPurple),
+          ? Icon(prefixIcon, color: Colors.black)
+          : const Icon(Icons.info_outline_sharp, color: Colors.black38),
       focusedBorder: const UnderlineInputBorder(
         borderSide: BorderSide(
-          color: Colors.deepPurple,
+          color: Colors.black38,
           width: 2,
         ),
       ),

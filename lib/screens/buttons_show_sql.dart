@@ -20,8 +20,18 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
     super.initState();
   }
 
-  bool isVisible = true;
-  String textoBoton = "Mostrar";
+  bool isVisibleImagenesArticulos = false;
+  bool isVisibleInfoArticulos = false;
+  bool isVisibleCategorias = false;
+  bool isVisibleClientes = false;
+  bool isVisibleEmpleados = false;
+  bool isVisibleProveedores = false;
+  bool isVisibleSucursales = false;
+  bool isVisibleTelefonos = false;
+  bool isVisibleVentas = false;
+  String textoBoton = "Mostrar Todo";
+  String textoBoton2 = "Ocultar Todo";
+  String textoBotonGenerico = "Mostrar";
   String base64Image = '';
   String textoImagen = '';
   String imageBueno =
@@ -34,19 +44,10 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
     //Conectandonos a la base de datos
     postgresConnection.connect();
 
-    Timer(const Duration(seconds: 4), () {
-      //debugPrint(base64Image);
-      postgresConnection.selectImageArticles();
-    });
-
-    Timer(const Duration(seconds: 5), () {
-      //debugPrint(base64Image);
-      textoImagen = changeValue(resultsFotografias.toString());
-    });
+    postgresConnection.selectAllArticles();
 
     Timer(const Duration(seconds: 4), () {
-      debugPrint(resultsFotografias.first.toString());
-      postgresConnection.selectImageArticles();
+      MiWidget(resultsWidget: resultsArticulos).recorrerLista(resultsArticulos);
     });
 
     return Scaffold(
@@ -59,8 +60,8 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
           scrollDirection: Axis.vertical,
           children: [
             Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Center(
                   child: Text(
@@ -70,165 +71,403 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
                 ),
                 Center(
                   child: ButtonBar(
+                    buttonHeight: 50,
+                    //buttonTextTheme: ButtonTextTheme.accent,
                     mainAxisSize: MainAxisSize.min,
                     alignment: MainAxisAlignment.center,
                     children: [
-                      MaterialButton(
-                        onPressed: () {
-                          setState(() {
-                            isVisible = !isVisible;
-                            if (isVisible) {
-                              textoBoton = "Mostrar Todo";
-                            } else {
-                              textoBoton = "Ocultar Todo";
-                            }
-                          });
-                        },
-                        child: Text(textoBoton),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          MaterialButton(
+                            onPressed: () {
+                              setState(() {
+                                isVisibleImagenesArticulos = true;
+                                isVisibleInfoArticulos = true;
+                                isVisibleCategorias = true;
+                                isVisibleClientes = true;
+                                isVisibleEmpleados = true;
+                                isVisibleProveedores = true;
+                                isVisibleSucursales = true;
+                                isVisibleTelefonos = true;
+                                isVisibleVentas = true;
+
+                                textoBoton = "Mostrar Todo";
+                              });
+                            },
+                            elevation: 5,
+                            color: Colors.grey[300],
+                            height: 40,
+                            child: Text(textoBoton),
+                          ),
+                          kSizedBox(),
+                          MaterialButton(
+                            onPressed: () {
+                              setState(() {
+                                isVisibleImagenesArticulos = false;
+                                isVisibleInfoArticulos = false;
+                                isVisibleCategorias = false;
+                                isVisibleClientes = false;
+                                isVisibleEmpleados = false;
+                                isVisibleProveedores = false;
+                                isVisibleSucursales = false;
+                                isVisibleTelefonos = false;
+                                isVisibleVentas = false;
+
+                                textoBoton2 = "Ocultar Todo";
+                              });
+                            },
+                            elevation: 5,
+                            color: Colors.grey[300],
+                            height: 40,
+                            child: Text(textoBoton2),
+                          ),
+                        ],
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            postgresConnection.selectImageArticles();
-                            textoImagen =
-                                changeValue(resultsFotografias.toString());
-                            debugPrint(textoImagen);
-                          });
-                        },
-                        child: const Text('Mostrar imagen los Articulos'),
+                      //imagenesArticulos
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                postgresConnection.selectImageArticles();
+                                textoImagen =
+                                    changeValue(resultsFotografias.toString());
+                                debugPrint(textoImagen);
+                              });
+                            },
+                            child: const Text('Solicitar imagen Articulos'),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                isVisibleImagenesArticulos =
+                                    !isVisibleImagenesArticulos;
+                              });
+                            },
+                            child: const Text('Mostrar/Ocultar'),
+                          ),
+                        ],
+                      ),
+                      //ImagenesArticulos
+                      Visibility(
+                        visible: isVisibleImagenesArticulos,
+                        child: Column(
+                          children: [
+                            Image.asset('lib/svg/imgMuebleria/bar.jpg'),
+                            kSizedBox(),
+                            const Text(
+                                'CONJUNTO DE DORMITORIO\n\$42100\ncristal\nmuebles de cristal\nMaderas SA\n'),
+                            kSizedBox(),
+                            Image.asset('lib/svg/imgMuebleria/buro.jpg'),
+                            const Text(
+                                'COMEDOR RUSTICO\n\$21875\nmadera\nmuebles de madera\n\n'),
+                            kSizedBox(),
+                            Image.asset('lib/svg/imgMuebleria/cajonera.jpg'),
+                            const Text(
+                                'CAJONERA COCINA\n\$18475\nbambú\nmuebles de bambú\n\n'),
+                            kSizedBox(),
+                            Image.asset('lib/svg/imgMuebleria/centro_j.jpg'),
+                            const Text(
+                                'CENTRO DE JUEGO\n\$15500\nmetal\nmuebles de metal\n\n'),
+                            kSizedBox(),
+                            Image.asset('lib/svg/imgMuebleria/sofa_ca.jpg'),
+                            const Text(
+                                'SOFA CAMA\n\$15000\nratán\nmuebles de ratán\n\n'),
+                            kSizedBox(),
+                          ],
+                        ),
                       ),
                       Visibility(
-                        visible: isVisible,
+                        visible: !isVisibleImagenesArticulos,
                         child: Image.memory(
                           imageMemoryReady(textoImagen),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            postgresConnection.selectAllArticles();
-                            debugPrint(resultsArticulos.toString());
-                          });
-                        },
-                        child: const Text('Mostrar todos los Articulos'),
+                      //infoArticulos
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                postgresConnection.selectAllArticles();
+                                debugPrint(resultsArticulos.toString());
+                              });
+                            },
+                            child: const Text('Solicitar Info Articulos'),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                isVisibleInfoArticulos =
+                                    !isVisibleInfoArticulos;
+                              });
+                            },
+                            child: const Text('Mostrar/Ocultar'),
+                          ),
+                        ],
                       ),
                       Visibility(
-                        visible: isVisible,
+                        visible: isVisibleInfoArticulos,
                         child: Text(
                           mostrarDatos(resultsArticulos),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            postgresConnection.selectAllCategories();
-                            debugPrint(resultsCategorias.toString());
-                          });
-                        },
-                        child: const Text('Mostrar todas las Categorias '),
+                      //categorias
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                postgresConnection.selectAllCategories();
+                                debugPrint(resultsCategorias.toString());
+                              });
+                            },
+                            child: const Text('Solicitar Categorias '),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                isVisibleCategorias = !isVisibleCategorias;
+                              });
+                            },
+                            child: const Text('Mostrar/Ocultar'),
+                          ),
+                        ],
                       ),
                       Visibility(
-                        visible: isVisible,
+                        visible: isVisibleCategorias,
                         child: Text(
                           mostrarDatos(resultsCategorias),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            postgresConnection.selectAllCustomers();
-                            debugPrint(resultsCategorias.toString());
-                          });
-                        },
-                        child: const Text('Mostrar todos los Clientes'),
+                      //clientes
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                postgresConnection.selectAllCustomers();
+                                debugPrint(resultsCategorias.toString());
+                              });
+                            },
+                            child: const Text('Solicitar Clientes'),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                isVisibleClientes = !isVisibleClientes;
+                              });
+                            },
+                            child: const Text('Mostrar/Ocultar'),
+                          ),
+                        ],
                       ),
                       Visibility(
-                        visible: isVisible,
+                        visible: isVisibleClientes,
                         child: Text(
                           mostrarDatos(resultsClientes),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            postgresConnection.selectAllEmployees();
-                            debugPrint(resultsEmpleados.toString());
-                          });
-                        },
-                        child: const Text('Mostrar todos los Empleados'),
+                      //empleados
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                postgresConnection.selectAllEmployees();
+                                debugPrint(resultsCategorias.toString());
+                              });
+                            },
+                            child: const Text('Solicitar Empleados'),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                isVisibleEmpleados = !isVisibleEmpleados;
+                              });
+                            },
+                            child: const Text('Mostrar/Ocultar'),
+                          ),
+                        ],
                       ),
                       Visibility(
-                        visible: isVisible,
+                        visible: isVisibleEmpleados,
                         child: Text(
                           mostrarDatos(resultsEmpleados),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            postgresConnection.selectAllProviders();
-                            debugPrint(resultsProveedores.toString());
-                          });
-                        },
-                        child: const Text('Mostrar todos los Proveedores'),
+                      //proveedores
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                postgresConnection.selectAllProviders();
+                                debugPrint(resultsProveedores.toString());
+                              });
+                            },
+                            child: const Text('Solicitar Proveedores'),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                isVisibleProveedores = !isVisibleProveedores;
+                              });
+                            },
+                            child: const Text('Mostrar/Ocultar'),
+                          ),
+                        ],
                       ),
                       Visibility(
-                        visible: isVisible,
+                        visible: isVisibleProveedores,
                         child: Text(
                           mostrarDatos(resultsProveedores),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            postgresConnection.selectAllBranches();
-                            debugPrint(resultsSucursales.toString());
-                          });
-                        },
-                        child: const Text('Mostrar todas las Sucursales'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                postgresConnection.selectAllBranches();
+                                debugPrint(resultsSucursales.toString());
+                              });
+                            },
+                            child: const Text('Solicitar Sucursales'),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                isVisibleSucursales = !isVisibleSucursales;
+                              });
+                            },
+                            child: const Text('Mostrar/Ocultar'),
+                          ),
+                        ],
                       ),
                       Visibility(
-                        visible: isVisible,
+                        visible: isVisibleSucursales,
                         child: Text(
                           mostrarDatos(resultsSucursales),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            postgresConnection.selectAllTelephones();
-                            debugPrint(resultsTelefono.toString());
-                          });
-                        },
-                        child: const Text('Mostrar todos los Teléfonos'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                postgresConnection.selectAllTelephones();
+                                debugPrint(resultsTelefono.toString());
+                              });
+                            },
+                            child: const Text('Solicitar Teléfonos'),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                isVisibleTelefonos = !isVisibleTelefonos;
+                              });
+                            },
+                            child: const Text('Mostrar/Ocultar'),
+                          ),
+                        ],
                       ),
+
                       Visibility(
-                        visible: isVisible,
+                        visible: isVisibleTelefonos,
                         child: Text(
                           mostrarDatos(resultsTelefono),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            postgresConnection.selectAllSales();
-                            debugPrint(resultsVentas.toString());
-                          });
-                        },
-                        child: const Text('Mostrar todas las Ventas'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                postgresConnection.selectAllSales();
+                                debugPrint(resultsVentas.toString());
+                              });
+                            },
+                            child: const Text('Solicitar Ventas'),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotones(),
+                            onPressed: () {
+                              setState(() {
+                                isVisibleVentas = !isVisibleVentas;
+                              });
+                            },
+                            child: const Text('Mostrar/Ocultar'),
+                          ),
+                        ],
                       ),
                       Visibility(
-                        visible: isVisible,
+                        visible: isVisibleVentas,
                         child: Text(
                           resultsVentas.toString(),
                         ),
                       ),
                       TextButton(
+                        style: kestiloBotonCool(),
                         onPressed: () {
                           Navigator.pushNamed(context, 'login');
                           postgresConnection.selectAllEmployees();
                         },
                         child: const Text('Agregar Empleado'),
+                      ),
+                      kSizedBox(),
+                      TextButton(
+                        style: kestiloBotonCool(),
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'categoria');
+                          postgresConnection.selectAllEmployees();
+                        },
+                        child: const Text('Agregar Categoria'),
+                      ),
+                      kSizedBox(),
+                      TextButton(
+                        style: kestiloBotonCool(),
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'telefono');
+                          postgresConnection.selectAllEmployees();
+                        },
+                        child: const Text('Agregar Telefono'),
                       ),
                     ],
                   ),
@@ -241,13 +480,67 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
     );
   }
 
+  SizedBox kSizedBox() {
+    return const SizedBox(
+      width: 10,
+    );
+  }
+
+  ButtonStyle kestiloBotones() {
+    return ButtonStyle(
+      elevation: MaterialStateProperty.all<double>(10),
+      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      backgroundColor: MaterialStateProperty.all<Color>(
+        Colors.black38,
+      ),
+    );
+  }
+
+  ButtonStyle kestiloBotonCool() {
+    return ButtonStyle(
+      elevation: MaterialStateProperty.all<double>(10),
+      foregroundColor: MaterialStateProperty.all<Color>(Colors.black38),
+      backgroundColor: MaterialStateProperty.all<Color>(
+        Colors.white,
+      ),
+    );
+  }
+
+  TextButton botonMostrarOcultar(bool isVisible) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          isVisible = !isVisible;
+        });
+      },
+      child: const Text('Mostrar/Ocultar'),
+    );
+  }
+
   mostrarDatos(results) {
-    final List<List<dynamic>> resultados = [];
+    //final List<List<dynamic>> resultados = [];
+    final List<List<dynamic>> resultadosFinal = [];
+
+    /*
+    for (int i = 0; i < results.length; i++) {
+      resultados.add(results[i]);
+      for (int j = 0; j < results[i].length; j++) {
+        debugPrint(results[i][j].toString());
+        //resultados.add(results[i][j]);
+        resultados.add(results[j]);
+      }
+    }
+     */
 
     for (final row in results) {
-      resultados.add(row);
+      resultadosFinal.add(row);
+      debugPrint('Renglon $row');
+      for (final column in row) {
+        debugPrint('Columna $column');
+      }
     }
-    return resultados.toString();
+
+    return resultadosFinal.toString();
   }
 
   //Le quita el formato al texto de la imagen
@@ -260,5 +553,42 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
   imageMemoryReady(String value) {
     final newValue = base64.decode(value.replaceAll(RegExp(r'\s+'), ''));
     return newValue;
+  }
+}
+
+class MiWidget extends StatelessWidget {
+  final List<List<dynamic>> resultsWidget;
+  final List<List<dynamic>> resultados = [];
+  List<dynamic> row = [], column = [];
+
+  MiWidget({super.key, required this.resultsWidget});
+
+  recorrerLista(List<List<dynamic>> resultadosWidget) {
+    debugPrint('Iniciando Recorrido');
+    for (int i = 0; i < resultadosWidget.length; i++) {
+      for (int j = 0; j < resultadosWidget[i].length; j++) {
+        debugPrint(resultadosWidget[i][j].toString());
+        resultados[i][j] = resultadosWidget[i][j];
+      }
+    }
+
+    for (row in resultsWidget) {
+      resultados.add(row);
+      debugPrint('row ${row.toString()}');
+      for (column in row) {
+        debugPrint('column ${column.toString()}');
+      }
+    }
+    return resultados;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: resultados.length,
+      itemBuilder: (context, index) {
+        return Text(resultados[index].toString());
+      },
+    );
   }
 }

@@ -76,6 +76,7 @@ class _LoginFormState extends State<LoginForm> {
             controller: idEmpleadoController,
             autocorrect: false,
             keyboardType: TextInputType.number,
+            style: const TextStyle(fontSize: 15, color: Colors.black),
             decoration: InputDecorations.authInputDecoration(
               hintText: '1234',
               labelText: 'ID Empleado',
@@ -181,7 +182,10 @@ class _LoginFormState extends State<LoginForm> {
                 return 'No puede estar vacio';
               }
               if (value.length < 18) {
-                return 'Curp inválido (18 caracteres)';
+                return 'Curp inválido <(18 caracteres)';
+              }
+              if (value.length > 18) {
+                return 'Curp inválido  > (18 caracteres)';
               }
               return null;
             },
