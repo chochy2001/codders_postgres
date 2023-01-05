@@ -64,8 +64,8 @@ ALTER TABLE public.PROVEEDOR OWNER TO mdthlconjlitvq;
 CREATE TABLE public.VENTA (
 	folio char(7) NOT NULL,
 	fecha timestamp NOT NULL,
-	monto_total numeric(8,2) NOT NULL,
-	cantidad_total smallint NOT NULL,
+	monto_total numeric(8,2)  NULL,
+	cantidad_total smallint  NULL,
 	"rfc_CLIENTE" char(13) NULL,
 	"id_empleado" integer NOT NULL,
 	"id_empleado1" integer NOT NULL,

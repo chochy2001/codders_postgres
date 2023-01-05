@@ -42,12 +42,28 @@ FOR EACH ROW EXECUTE FUNCTION razonS_Default();
 
 --Trigger para calcular el valor del monto por articulo en ES_VENDIDO
 CREATE OR REPLACE function montoXArt() RETURNS TRIGGER AS $montoXArt$
-DECLARE montoTot money;
+DECLARE montoTot numeric(8,2);
+DECLARE totalArti smallint;
+DECLARE totalCosto numeric;
 BEGIN
+
 	SELECT precio_venta INTO montoTot FROM articulo AS ar WHERE ar.codigo_barras=new.codigo_barras;
+	IF(montoTot IS NULL) THEN
+		SELECT precio_venta INTO montoTot FROM low_stock AS lw WHERE lw.codigo_barras=new.codigo_barras;
+	END IF;
 	IF	(TG_OP='INSERT') THEN
 		update es_vendido set monto=(montoTot*new.cantidad)  WHERE codigo_barras=new.codigo_barras AND folio=new.folio;
+
+		--Parte que realiza el cálculo del monto total y de la cantidad total
+		IF(new.finish) THEN
+			SELECT SUM(cantidad) INTO totalArti FROM es_vendido GROUP BY folio HAVING folio=new.folio;
+			SELECT SUM(monto) INTO totalCosto FROM es_vendido GROUP BY folio HAVING folio=new.folio;
+
+			UPDATE venta SET monto_total=totalCosto, cantidad_total=totalArti WHERE folio=new.folio;
+			--Agregar ticket
+		END IF;
 	END IF;
+
 	RETURN NEW;
 END;
 $montoXArt$ LANGUAGE PLPGSQL;
@@ -83,41 +99,23 @@ CREATE SEQUENCE secue_folio_venta AS smallint
 	NO CYCLE
 	OWNED BY VENTA.folio;
 
-alter sequence secue_folio_venta restart [with numero];
 insert into venta values(nextval('secue_folio_venta'),now(),...);
-
-CREATE TABLE public.low_stock(
-	codigo_barras bigint NOT NULL,
-	nombre varchar(50) NOT NULL,
-	precio_compra numeric(8,2) NOT NULL,
-	precio_venta numeric(8,2) NOT NULL,
-	stock smallint NOT NULL,
-	fotografia text NOT NULL,
-	"id_categoria" integer NOT NULL,
-	CONSTRAINT "LOW_STOCK_pk" PRIMARY KEY (codigo_barras)
-);
-
-insert into venta values(nextval('secue_folio_venta'),now(),...);
-
--- Creacion de tabla auxiliar con mismos atributos que tabla artículo (aquí se agregan productos con stock<3)
-CREATE TABLE low_stock (codigo_battas BIGINT, id_Categoria INTEGER, precio_venta MONEY, precio_compra MONEY, nombre VARCHAR(50), stock SMALLINT);
 
 -- Trigger para crear una tabla auxiliar para productos con stock menor a 3
 CREATE OR REPLACE FUNCTION eliminacion_2() RETURNS TRIGGER AS $$
 DECLARE cantidad smallint;
 	BEGIN
-		SELECT COUNT(*) INTO cantidad FROM articulos where stock<3;
+		SELECT COUNT(*) INTO cantidad FROM articulo where stock<3;
 		IF(cantidad!=0) THEN
-			INSERT INTO low_stock  SELECT * FROM articulos AS ar WHERE ar.stock<3;
-		 	RAISE NOTICE 'El articulo no esta disponible';
-			DELETE FROM articulos WHERE stock<3;
-			RAISE NOTICE 'El articulo no esta disponible';
-			END IF;
-			RETURN NEW;
+			INSERT INTO low_stock  SELECT * FROM articulo AS ar WHERE ar.stock<3;
+			DELETE FROM articulo WHERE stock<3;
+			RAISE NOTICE 'El articulo ya no esta disponible';
+		END IF;
+		RETURN NEW;
 	END;
-	$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER eliminacion_2 AFTER INSERT OR UPDATE OR DELETE ON articulos FOR EACH ROW EXECUTE PROCEDURE eliminacion_2();
+CREATE TRIGGER eliminacion_2 AFTER INSERT OR UPDATE OR DELETE ON articulo FOR EACH ROW EXECUTE PROCEDURE eliminacion_2();
 
 
 -- Tigger pare retornar productos desde tabla auxiliar a tabla de artículos para productos con stock mayor a 3
@@ -126,13 +124,40 @@ DECLARE amount smallint;
 	BEGIN
 		SELECT COUNT(*) INTO amount FROM low_stock where stock>3;
 		IF(amount!=0) THEN
-		INSERT INTO articulos SELECT * FROM low_stock AS lw WHERE lw.stock>3;
-		RAISE NOTICE 'El articulo esta disponible';
-		DELETE FROM low_stock WHERE stock>3;
-		RAISE NOTICE 'El articulo esta disponible';
+			INSERT INTO articulo SELECT * FROM low_stock AS lw WHERE lw.stock>3;
+			DELETE FROM low_stock WHERE stock>3;
+			RAISE NOTICE 'El articulo esta disponible';
 		END IF;
 		RETURN NEW;
 	END;
-	$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER agregacion_2 AFTER INSERT OR UPDATE OR DELETE ON low_stock FOR EACH ROW EXECUTE PROCEDURE agregacion_2();
+
+CREATE VIEW vis_articulos_cat_prov AS
+	select a.nombre,a.precio_venta,a.fotografia,c.nombre categoria,c.descripcion,p.razon_social empresa FROM articulo a
+	LEFT JOIN categoria c ON a.id_categoria=c.id_categoria
+	LEFT JOIN provee pe ON a.codigo_barras=pe.codigo_barras
+	LEFT JOIN proveedor p ON p.rfc=pe.rfc;
+
+
+--Trigger que actualiza los valores en stock de los articulos
+CREATE OR REPLACE function restador_stock() RETURNS TRIGGER AS $restador_stock$
+DECLARE stockArt smallint;
+BEGIN
+	SELECT stock INTO stockArt FROM articulo where codigo_barras=new.codigo_barras;
+	IF(stockArt<=new.cantidad) THEN
+		RAISE NOTICE 'La cantidad de articulos en el carrito supera el stock disponible';
+		RETURN NULL;
+	END IF;
+
+	UPDATE articulo SET stock=(stockArt-new.cantidad) where codigo_barras=new.codigo_barras;
+
+	RETURN NEW;
+END;
+$restador_stock$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER restador_stock BEFORE INSERT ON es_vendido
+FOR EACH ROW EXECUTE FUNCTION restador_stock();
+
+
