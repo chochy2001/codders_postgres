@@ -99,7 +99,22 @@ CREATE SEQUENCE secue_folio_venta AS smallint
 	NO CYCLE
 	OWNED BY VENTA.folio;
 
-insert into venta values(nextval('secue_folio_venta'),now(),...);
+CREATE TABLE public.low_stock(
+	codigo_barras bigint NOT NULL,
+	nombre varchar(50) NOT NULL,
+	precio_compra numeric(8,2) NOT NULL,
+	precio_venta numeric(8,2) NOT NULL,
+	stock smallint NOT NULL,
+	fotografia text NOT NULL,
+	"id_categoria" integer NOT NULL,
+	CONSTRAINT "LOW_STOCK_pk" PRIMARY KEY (codigo_barras)
+);
+CREATE TABLE public.low_stock_provee (
+	"rfc" varchar(13) NOT NULL,
+	"codigo_barras" bigint NOT NULL,
+	fecha_comienzo date NOT NULL,
+	CONSTRAINT "low_stock_provee_pk" PRIMARY KEY ("rfc","codigo_barras")
+);
 
 -- Trigger para crear una tabla auxiliar para productos con stock menor a 3
 CREATE OR REPLACE FUNCTION eliminacion_2() RETURNS TRIGGER AS $$
@@ -107,7 +122,13 @@ DECLARE cantidad smallint;
 	BEGIN
 		SELECT COUNT(*) INTO cantidad FROM articulo where stock<3;
 		IF(cantidad!=0) THEN
-			INSERT INTO low_stock  SELECT * FROM articulo AS ar WHERE ar.stock<3;
+
+			INSERT INTO low_stock SELECT * FROM articulo AS ar WHERE ar.stock<3;
+			INSERT INTO low_stock_provee SELECT pr.rfc,pr.codigo_barras,pr.fecha_comienzo FROM provee AS pr 
+				LEFT JOIN articulo ar ON pr.codigo_barras=ar.codigo_barras WHERE ar.stock<3 ;
+
+			DELETE FROM provee pr WHERE rfc=(select pr.rfc from provee pr LEFT JOIN articulo ar ON pr.codigo_barras=ar.codigo_barras WHERE ar.stock<3) 
+				AND codigo_barras=(select pr.codigo_barras from provee pr LEFT JOIN articulo ar ON pr.codigo_barras=ar.codigo_barras WHERE ar.stock<3);
 			DELETE FROM articulo WHERE stock<3;
 			RAISE NOTICE 'El articulo ya no esta disponible';
 		END IF;
@@ -125,6 +146,11 @@ DECLARE amount smallint;
 		SELECT COUNT(*) INTO amount FROM low_stock where stock>3;
 		IF(amount!=0) THEN
 			INSERT INTO articulo SELECT * FROM low_stock AS lw WHERE lw.stock>3;
+			INSERT INTO provee SELECT pr.rfc,pr.codigo_barras,pr.fecha_comienzo FROM low_stock_provee AS pr 
+				LEFT JOIN articulo ar ON pr.codigo_barras=ar.codigo_barras WHERE ar.stock>3;
+
+			DELETE FROM low_stock_provee pr WHERE rfc=(select pr.rfc from provee pr LEFT JOIN articulo ar ON pr.codigo_barras=ar.codigo_barras WHERE ar.stock>3)
+				AND codigo_barras=(select pr.codigo_barras from provee pr LEFT JOIN articulo ar ON pr.codigo_barras=ar.codigo_barras WHERE ar.stock>3);
 			DELETE FROM low_stock WHERE stock>3;
 			RAISE NOTICE 'El articulo esta disponible';
 		END IF;
