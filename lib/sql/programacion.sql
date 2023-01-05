@@ -186,4 +186,12 @@ $restador_stock$ LANGUAGE PLPGSQL;
 CREATE TRIGGER restador_stock BEFORE INSERT ON es_vendido
 FOR EACH ROW EXECUTE FUNCTION restador_stock();
 
+create index ix_articulo on articulo(
+  codigo_barras,
+  nombre,
+  precio_compra,
+  precio_venta,
+  stock,
+  id_categoria
+);
 
