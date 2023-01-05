@@ -210,6 +210,7 @@ CREATE TABLE public.ES_VENDIDO (
 	"codigo_barras" bigint NOT NULL,
 	monto numeric(8,2) NULL,
 	cantidad smallint NOT NULL,
+	finish boolean NOT NULL,
 	CONSTRAINT "ES_VENDIDO_pk" PRIMARY KEY ("folio","codigo_barras")
 );
 -- ddl-end --
