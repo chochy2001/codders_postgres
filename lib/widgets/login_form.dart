@@ -43,7 +43,6 @@ class _LoginFormState extends State<LoginForm> {
   String email = 'email';
   String numeroExterior = 'ex123';
   String numeroInterior = 'in123';
-  String estado = 'estado';
   String codigoPostal = 'cp04531';
   String calle = 'calle ';
   String idSucursal = 'idsuc123';
@@ -568,7 +567,6 @@ class _LoginFormState extends State<LoginForm> {
                 email = emailController.text;
                 numeroExterior = numeroExteriorController.text;
                 numeroInterior = numeroInteriorController.text;
-                estado = estadoController.text;
                 codigoPostal = codigoPostalController.text;
                 calle = calleController.text;
                 idSucursal = idSucursalController.text;
@@ -595,7 +593,6 @@ class _LoginFormState extends State<LoginForm> {
             'Correo Electronico: $email\n'
             'Numero Exterior: $numeroExterior\n'
             'Numero Interior: $numeroInterior\n'
-            'Estado: $estado\n'
             'Codigo Postal: $codigoPostal\n'
             'Calle: $calle\n'
             'ID Sucursal: $idSucursal\n'
@@ -611,7 +608,7 @@ class _LoginFormState extends State<LoginForm> {
                 try {
                   debugPrint("se agrego un empleado");
                   newConnection.query(
-                      'insert into empleado (id_empleado,curp,rfc,nombre,apellido_paterno,apellido_materno,fecha_ingreso,tipo,email,numero_exterior,numero_interior,estado,codigo_postal,calle,id_sucursal,id_empleado1) values (@aid_empleado,@acurp,@arfc,@anombre,@aapellido_paterno,@aapellido_materno,@afecha_ingreso,@atipo,@aemail,@anumero_exterior,@anumero_interior,@aestado,@acodigo_postal,@acalle,@aid_sucursal,@aid_empleado1)',
+                      'insert into empleado (id_empleado,curp,rfc,nombre,apellido_paterno,apellido_materno,fecha_ingreso,tipo,email,numero_exterior,numero_interior,codigo_postal,calle,id_sucursal,id_empleado1) values (@aid_empleado,@acurp,@arfc,@anombre,@aapellido_paterno,@aapellido_materno,@afecha_ingreso,@atipo,@aemail,@anumero_exterior,@anumero_interior,@acodigo_postal,@acalle,@aid_sucursal,@aid_empleado1)',
                       substitutionValues: {
                         'aid_empleado': idEmpleado,
                         'acurp': curp,
@@ -624,7 +621,6 @@ class _LoginFormState extends State<LoginForm> {
                         'aemail': email,
                         'anumero_exterior': numeroExterior,
                         'anumero_interior': numeroInterior,
-                        'aestado': estado,
                         'acodigo_postal': codigoPostal,
                         'acalle': calle,
                         'aid_sucursal': idSucursal,

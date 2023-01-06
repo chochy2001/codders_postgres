@@ -208,13 +208,6 @@ class PostgresConnection {
       resultsVentas = await connection.query("Select * from venta");
       debugPrint("seleccion de todas las ventas");
 
-      /*
-      for (final row in resultsVentas) {
-        if (kDebugMode) {
-          print(row);
-        }
-      }
-     */
       //Imprime todos los valores de la tabla
       //todo
       for (int i = 0; i < resultsVentas.length; i++) {
