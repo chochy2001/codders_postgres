@@ -64,8 +64,8 @@ ALTER TABLE public.PROVEEDOR OWNER TO mdthlconjlitvq;
 CREATE TABLE public.VENTA (
 	folio char(7) NOT NULL,
 	fecha timestamp NOT NULL,
-	monto_total numeric(8,2) NOT NULL,
-	cantidad_total smallint NOT NULL,
+	monto_total numeric(8,2)  NULL,
+	cantidad_total smallint  NULL,
 	"rfc_CLIENTE" char(13) NULL,
 	"id_empleado" integer NOT NULL,
 	"id_empleado1" integer NOT NULL,
@@ -210,6 +210,7 @@ CREATE TABLE public.ES_VENDIDO (
 	"codigo_barras" bigint NOT NULL,
 	monto numeric(8,2) NULL,
 	cantidad smallint NOT NULL,
+	finish boolean NOT NULL,
 	CONSTRAINT "ES_VENDIDO_pk" PRIMARY KEY ("folio","codigo_barras")
 );
 -- ddl-end --
