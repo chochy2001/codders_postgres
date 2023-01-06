@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:codders_postgres/postgres_connection.dart';
+import 'package:flutter/material.dart';
 
 class ButtonsShowSql extends StatefulWidget {
   const ButtonsShowSql({super.key});
@@ -66,6 +66,13 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
                 const Center(
                   child: Text(
                     'App de uso de Postgres para obtener información\n',
+                    style: TextStyle(
+                      color: Colors.black38,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.none,
+                      fontStyle: FontStyle.italic,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -158,24 +165,24 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
                         visible: isVisibleImagenesArticulos,
                         child: Column(
                           children: [
-                            Image.asset('lib/svg/imgMuebleria/bar.jpg'),
+                            Image.asset('lib/svg/ImgMuebleria/bar.jpg'),
                             kSizedBox(),
                             const Text(
                                 'CONJUNTO DE DORMITORIO\n\$42100\ncristal\nmuebles de cristal\nMaderas SA\n'),
                             kSizedBox(),
-                            Image.asset('lib/svg/imgMuebleria/buro.jpg'),
+                            Image.asset('lib/svg/ImgMuebleria/buro.jpg'),
                             const Text(
                                 'COMEDOR RUSTICO\n\$21875\nmadera\nmuebles de madera\n\n'),
                             kSizedBox(),
-                            Image.asset('lib/svg/imgMuebleria/cajonera.jpg'),
+                            Image.asset('lib/svg/ImgMuebleria/cajonera.jpg'),
                             const Text(
                                 'CAJONERA COCINA\n\$18475\nbambú\nmuebles de bambú\n\n'),
                             kSizedBox(),
-                            Image.asset('lib/svg/imgMuebleria/centro_j.jpg'),
+                            Image.asset('lib/svg/ImgMuebleria/centro_j.jpg'),
                             const Text(
                                 'CENTRO DE JUEGO\n\$15500\nmetal\nmuebles de metal\n\n'),
                             kSizedBox(),
-                            Image.asset('lib/svg/imgMuebleria/sofa_ca.jpg'),
+                            Image.asset('lib/svg/ImgMuebleria/sofa_ca.jpg'),
                             const Text(
                                 'SOFA CAMA\n\$15000\nratán\nmuebles de ratán\n\n'),
                             kSizedBox(),
@@ -183,7 +190,7 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
                         ),
                       ),
                       Visibility(
-                        visible: !isVisibleImagenesArticulos,
+                        visible: isVisibleImagenesArticulos,
                         child: Image.memory(
                           imageMemoryReady(textoImagen),
                         ),
@@ -443,31 +450,74 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
                           resultsVentas.toString(),
                         ),
                       ),
-                      TextButton(
-                        style: kestiloBotonCool(),
-                        onPressed: () {
-                          Navigator.pushNamed(context, 'login');
-                          postgresConnection.selectAllEmployees();
-                        },
-                        child: const Text('Agregar Empleado'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotonCool(),
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'login');
+                              postgresConnection.selectAllEmployees();
+                            },
+                            child: const Text('Agregar Empleado'),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotonCool(),
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'eliminar_empleado');
+                              postgresConnection.selectAllEmployees();
+                            },
+                            child: const Text('Eliminar Empleado'),
+                          ),
+                        ],
                       ),
                       kSizedBox(),
-                      TextButton(
-                        style: kestiloBotonCool(),
-                        onPressed: () {
-                          Navigator.pushNamed(context, 'categoria');
-                          postgresConnection.selectAllEmployees();
-                        },
-                        child: const Text('Agregar Categoria'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotonCool(),
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'categoria');
+                              postgresConnection.selectAllEmployees();
+                            },
+                            child: const Text('Agregar Categoria'),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotonCool(),
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, 'eliminar_categoria');
+                              postgresConnection.selectAllEmployees();
+                            },
+                            child: const Text('Eliminar Categoria'),
+                          ),
+                        ],
                       ),
                       kSizedBox(),
-                      TextButton(
-                        style: kestiloBotonCool(),
-                        onPressed: () {
-                          Navigator.pushNamed(context, 'telefono');
-                          postgresConnection.selectAllEmployees();
-                        },
-                        child: const Text('Agregar Telefono'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            style: kestiloBotonCool(),
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'telefono');
+                              postgresConnection.selectAllEmployees();
+                            },
+                            child: const Text('Agregar Telefono'),
+                          ),
+                          kSizedBox(),
+                          TextButton(
+                            style: kestiloBotonCool(),
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'eliminar_telefono');
+                              postgresConnection.selectAllEmployees();
+                            },
+                            child: const Text('Eliminar Telefono'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -556,10 +606,11 @@ class _ButtonsShowSqlState extends State<ButtonsShowSql> {
   }
 }
 
+List<dynamic> row = [], column = [];
+
 class MiWidget extends StatelessWidget {
   final List<List<dynamic>> resultsWidget;
   final List<List<dynamic>> resultados = [];
-  List<dynamic> row = [], column = [];
 
   MiWidget({super.key, required this.resultsWidget});
 

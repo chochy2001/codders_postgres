@@ -1,8 +1,11 @@
 import 'package:codders_postgres/inicio.dart';
+import 'package:codders_postgres/screens/screens.dart';
+import 'package:codders_postgres/widgets/eliminar_categoria.dart';
+import 'package:codders_postgres/widgets/eliminar_empleado.dart';
+import 'package:codders_postgres/widgets/eliminar_telefono.dart';
 import 'package:codders_postgres/widgets/login_categoria.dart';
 import 'package:codders_postgres/widgets/login_telefono.dart';
 import 'package:flutter/material.dart';
-import 'package:codders_postgres/screens/screens.dart';
 
 void main() => runApp(const MyApp());
 
@@ -37,6 +40,9 @@ class MyApp extends StatelessWidget {
         'categoria': (context) => const LoginCategoria(),
         'telefono': (context) => const LoginTelefono(),
         'login': (context) => const EmployeeLogin(),
+        'eliminar_empleado': (context) => const EliminarEmpleado(),
+        'eliminar_categoria': (context) => const EliminarCategoria(),
+        'eliminar_telefono': (context) => const EliminarTelefono(),
         'buttons_show_sql': (context) => const ButtonsShowSql(),
       },
     );

@@ -8,16 +8,16 @@ class LoginTelefono extends StatefulWidget {
   const LoginTelefono({super.key});
 
   @override
-  _LoginTelefonoState createState() => _LoginTelefonoState();
+  LoginTelefonoState createState() => LoginTelefonoState();
 }
 
-class _LoginTelefonoState extends State<LoginTelefono> {
+class LoginTelefonoState extends State<LoginTelefono> {
   final TextEditingController numTelController = TextEditingController();
   final TextEditingController telefonoEmpleadoController =
       TextEditingController();
   final TextEditingController idEmpleadoController = TextEditingController();
   String numTel = '111';
-  String TelefonoEmpleado = 'nombre';
+  String telefonoEmpleado = 'nombre';
   String idEmpleado = 'apellido Paterno';
 
   final _formKey = GlobalKey<FormState>();
@@ -135,7 +135,7 @@ class _LoginTelefonoState extends State<LoginTelefono> {
                     }
                     setState(() {
                       numTel = numTelController.text;
-                      TelefonoEmpleado = telefonoEmpleadoController.text;
+                      telefonoEmpleado = telefonoEmpleadoController.text;
                       idEmpleado = idEmpleadoController.text;
                     });
                   },
@@ -149,7 +149,7 @@ class _LoginTelefonoState extends State<LoginTelefono> {
                 Text(
                   'DATOS INGRESADOS:\n'
                   'ID Categoria: $numTel\n'
-                  'Nombre: $TelefonoEmpleado\n'
+                  'Nombre: $telefonoEmpleado\n'
                   'Descripción: $idEmpleado\n',
                   style: const TextStyle(
                     fontSize: 15,
@@ -164,7 +164,7 @@ class _LoginTelefonoState extends State<LoginTelefono> {
                             'insert into telefono(num_tel,telefono_empleado,id_empleado) values (@anum_tel,@atelefono,@aid_empleado)',
                             substitutionValues: {
                               'anum_tel': numTel,
-                              'atelefono': TelefonoEmpleado,
+                              'atelefono': telefonoEmpleado,
                               'aid_empleado': idEmpleado,
                             });
                         debugPrint("se agrego un Telefono");
