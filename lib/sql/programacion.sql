@@ -45,6 +45,15 @@ CREATE OR REPLACE function montoXArt() RETURNS TRIGGER AS $montoXArt$
 DECLARE montoTot numeric(8,2);
 DECLARE totalArti smallint;
 DECLARE totalCosto numeric;
+
+declare   folticket   varchar(32);
+declare   artic       varchar(50);
+declare   cantid      smallint;
+declare   preci       numeric(8,2);
+declare   totArt      smallint;
+declare   montotal    numeric(8,2);
+declare   fecha_t     date;
+
 BEGIN
 
 	SELECT precio_venta INTO montoTot FROM articulo AS ar WHERE ar.codigo_barras=new.codigo_barras;
@@ -60,7 +69,35 @@ BEGIN
 			SELECT SUM(monto) INTO totalCosto FROM es_vendido GROUP BY folio HAVING folio=new.folio;
 
 			UPDATE venta SET monto_total=totalCosto, cantidad_total=totalArti WHERE folio=new.folio;
-			--Agregar ticket
+			--INICIA TICKET
+			create temporary table ticket(
+				folio_ticket      varchar(32)     primary key, --Folio unico
+				articulo          varchar(50)     not null,
+				cantidad          smallint        not null,
+				precio            numeric(8,2)    not null,
+				total_articulos   smallint        not null,
+				monto_total       numeric(8,2)    not null,
+				fecha             date            not null
+			) on commit drop; --cuando termine la transacción, se elimina la tabla
+
+			--Se consultan todos los datos necesarios para el ticket
+			select a.nombre into artic,
+				ev.cantidad into cantid,
+				sum(ev.monto) into preci, 
+				v.cantidad_total into totArt, 
+				v.monto_total into montotal,
+				v.fecha into fecha
+			from venta v join es_vendido ev on(v.folio=ev.folio)
+			join articulo a on(a.codigo_barras = ev.codigo_barras)
+			group by a.nombre, ev.cantidad, v.cantidad_total, v.monto_total,v.fecha;
+
+			select md5(random()::varchar(32)) into folticket; --Función que devuelve cifrados aleatorios de 32 caracteres
+
+			--Se inserta el nuevo folio con las funciones md5() y random(), así como los valores consultados
+			insert into ticket(folio_ticket, articulo, cantidad, precio, total_articulos, monto_total, fecha) 
+			values(folticket, artic, cantid, preci, totArt, montotal, fecha_t);
+			--Al final, sólo se tiene un registro en esta tabla.
+			--FIN TICKET
 		END IF;
 	END IF;
 
@@ -194,4 +231,3 @@ create index ix_articulo on articulo(
   stock,
   id_categoria
 );
-
