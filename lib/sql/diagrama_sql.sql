@@ -44,7 +44,7 @@ ALTER TABLE public.CATEGORIA OWNER TO mdthlconjlitvq;
 -- object: public."PROVEEDOR" | type: TABLE --
 -- DROP TABLE IF EXISTS public."PROVEEDOR" CASCADE;
 CREATE TABLE public.PROVEEDOR (
-	rfc varchar(13) NOT NULL,
+	rfc char(13) NOT NULL,
 	telefono bigint NOT NULL,
 	razon_social varchar(50) UNIQUE NOT NULL,
 	cuenta_pago bigint NOT NULL,
@@ -263,4 +263,45 @@ ALTER TABLE public.EMPLEADO ADD CONSTRAINT "EMPLEADO_fk" FOREIGN KEY ("id_emplea
 REFERENCES public.EMPLEADO (id_empleado) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
+
+create table EMPLEADO_ESTADO(
+	codigo_postal bigint NOT NULL,
+	estado varchar(40) NOT NULL,
+	CONSTRAINT "empleado_cp_pk" PRIMARY KEY (codigo_postal)
+);
+
+ALTER TABLE public.EMPLEADO ADD CONSTRAINT "empleado_cp__fk" FOREIGN KEY ("codigo_postal")
+REFERENCES public.EMPLEADO_ESTADO (codigo_postal) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE;
+
+create table PROVEEDOR_ESTADO(
+	codigo_postal bigint NOT NULL,
+	estado varchar(40) NOT NULL,
+	CONSTRAINT "proveedor_cp_pk" PRIMARY KEY (codigo_postal)
+);
+
+ALTER TABLE public.PROVEEDOR ADD CONSTRAINT "proveedor_cp__fk" FOREIGN KEY ("codigo_postal")
+REFERENCES public.PROVEEDOR_ESTADO (codigo_postal) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE;
+
+create table CLIENTE_ESTADO(
+	codigo_postal bigint NOT NULL,
+	estado varchar(40) NOT NULL,
+	CONSTRAINT "cliente_cp_pk" PRIMARY KEY (codigo_postal)
+);
+
+ALTER TABLE public.CLIENTE ADD CONSTRAINT "cliente_cp__fk" FOREIGN KEY ("codigo_postal")
+REFERENCES public.CLIENTE_ESTADO (codigo_postal) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE;
+
+create table SUCURSAL_ESTADO(
+	codigo_postal bigint NOT NULL,
+	estado varchar(40) NOT NULL,
+	CONSTRAINT "sucursal_cp_pk" PRIMARY KEY (codigo_postal)
+);
+
+ALTER TABLE public.SUCURSAL ADD CONSTRAINT "sucursal_cp__fk" FOREIGN KEY ("codigo_postal")
+REFERENCES public.SUCURSAL_ESTADO (codigo_postal) MATCH FULL
+ON DELETE RESTRICT ON UPDATE CASCADE;
+
 
